@@ -1,24 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airdrop Tracker</title>
+  <title>Crypto Airdrop Tracker</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts for Web3 style -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-  <h1>Airdrop Tracker</h1>
-  <p>Track Web3 airdrops, testnets, and opportunities.</p>
-  
-<input
-  type="text"
-  id="search"
-  placeholder="Search airdrops..."
->
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-icon">🪂</span>
+      <h2>Airdrop<span>Hunter</span></h2>
+    </div>
+    <div class="stats-badge">
+      <span id="active-count">0</span> Active Opportunities
+    </div>
+  </header>
 
-<div id="airdrop-list"></div>
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Track & Farm Potential Airdrops</h1>
+      <p>Kumpulan daftar airdrop crypto potensial lengkap dengan panduan dan statusnya.</p>
+    </section>
+
+    <!-- Controls (Search & Filter) -->
+    <section class="controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari project (contoh: Monad, LayerZero)...">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-status="All">All</button>
+        <button class="filter-btn" data-status="Testnet">Testnet</button>
+        <button class="filter-btn" data-status="Mainnet">Mainnet</button>
+        <button class="filter-btn" data-status="Ended">Ended</button>
+      </div>
+    </section>
+
+    <!-- Cards Grid -->
+    <section class="airdrop-grid" id="airdropContainer">
+      <!-- Data dari JSON akan dirender di sini via JavaScript -->
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Airdrop Tracker. Built for Web3 Hunters.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
