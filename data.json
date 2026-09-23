@@ -2,28 +2,42 @@
   {
     "id": 1,
     "projectName": "Monad",
-    "category": "Layer 1",
+    "category": "EVM Layer 1",
     "status": "Testnet",
     "costType": "Free",
-    "potential": "$1,000 - $5,000",
-    "cost": "Free",
-    "tasks": "Testnet swap, bridge, & interact with ecosystem dApps",
+    "potential": "$1,500 - $5,000",
+    "cost": "$0 (Faucet)",
+    "chain": "Monad Testnet",
+    "tasks": [
+      "Claim Monad Testnet Faucet dari official Discord/Site",
+      "Lakukan minimal 10x Swaps di Monad DEX (Ambient / Izumi)",
+      "Deploy smart contract via Thirdweb / Remix",
+      "Join Discord & klaim role Early Backer"
+    ],
     "link": "https://monad.xyz",
     "featured": true,
-    "badge": "🔥 Hot Potential"
+    "badge": "🔥 Tier 1 Alpha",
+    "addedDate": "2026-02-15"
   },
   {
     "id": 2,
     "projectName": "Berachain",
-    "category": "Layer 1 (Proof of Liquidity)",
+    "category": "PoL Layer 1",
     "status": "Testnet",
     "costType": "Free",
-    "potential": "$500 - $3,000",
-    "cost": "Free",
-    "tasks": "Faucet, BEX swap, Honey minting, Bend supply",
+    "potential": "$800 - $3,500",
+    "cost": "$0 (Faucet)",
+    "chain": "Berachain Artio",
+    "tasks": [
+      "Klaim BERA Faucet daily",
+      "Mint $HONEY stablecoin di BEX",
+      "Supply $HONEY ke Bend Vault untuk hasilkan BGT",
+      "Delegate BGT validator di Station"
+    ],
     "link": "https://berachain.com",
     "featured": true,
-    "badge": "⚡ Confirmed Airdrop"
+    "badge": "⚡ Confirmed",
+    "addedDate": "2026-02-20"
   },
   {
     "id": 3,
@@ -31,24 +45,34 @@
     "category": "Interoperability",
     "status": "Mainnet",
     "costType": "Paid",
-    "potential": "$1,000+",
-    "cost": "$10 - $50 (Gas)",
-    "tasks": "Cross-chain bridge transactions, Staking STG",
+    "potential": "$1,200+",
+    "cost": "$15 - $40",
+    "chain": "Multi-Chain",
+    "tasks": [
+      "Bridge aset antar 5+ chain berbeda via Stargate V2",
+      "Stake STG & dapatkan voting power di Snapshot",
+      "Gunakan Merkly Hyperlane / LayerZero messaging"
+    ],
     "link": "https://layerzero.network",
     "featured": false,
-    "badge": "💎 Tier 1"
+    "badge": "💎 Veteran Focus",
+    "addedDate": "2026-01-10"
   },
   {
     "id": 4,
     "projectName": "Scroll",
-    "category": "zkEVM Layer 2",
+    "category": "zkEVM L2",
     "status": "Ended",
     "costType": "Paid",
     "potential": "Distributed",
-    "cost": "$5 - $20",
-    "tasks": "Airdrop distribution completed",
+    "cost": "$10",
+    "chain": "Scroll Mainnet",
+    "tasks": [
+      "Airdrop snapshot telah diambil dan didistribusikan."
+    ],
     "link": "https://scroll.io",
     "featured": false,
-    "badge": "🏁 Completed"
+    "badge": "🏁 Snapshot Taken",
+    "addedDate": "2025-12-01"
   }
 ]
