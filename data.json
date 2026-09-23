@@ -6,17 +6,17 @@
     "status": "Testnet",
     "costType": "Free",
     "potential": "$1,500 - $5,000",
-    "cost": "$0 (Faucet)",
+    "cost": "$0",
     "chain": "Monad Testnet",
     "tasks": [
-      "Claim Monad Testnet Faucet dari official Discord/Site",
-      "Lakukan minimal 10x Swaps di Monad DEX (Ambient / Izumi)",
-      "Deploy smart contract via Thirdweb / Remix",
-      "Join Discord & klaim role Early Backer"
+      "Claim testnet faucet",
+      "Complete swaps on Monad DEX",
+      "Deploy a smart contract",
+      "Join the official Discord"
     ],
     "link": "https://monad.xyz",
     "featured": true,
-    "badge": "🔥 Tier 1 Alpha",
+    "badge": "High Priority",
     "addedDate": "2026-02-15"
   },
   {
@@ -26,17 +26,17 @@
     "status": "Testnet",
     "costType": "Free",
     "potential": "$800 - $3,500",
-    "cost": "$0 (Faucet)",
+    "cost": "$0",
     "chain": "Berachain Artio",
     "tasks": [
-      "Klaim BERA Faucet daily",
-      "Mint $HONEY stablecoin di BEX",
-      "Supply $HONEY ke Bend Vault untuk hasilkan BGT",
-      "Delegate BGT validator di Station"
+      "Claim testnet faucet",
+      "Mint HONEY on BEX",
+      "Supply HONEY to Bend",
+      "Delegate BGT"
     ],
     "link": "https://berachain.com",
     "featured": true,
-    "badge": "⚡ Confirmed",
+    "badge": "Confirmed",
     "addedDate": "2026-02-20"
   },
   {
@@ -49,13 +49,14 @@
     "cost": "$15 - $40",
     "chain": "Multi-Chain",
     "tasks": [
-      "Bridge aset antar 5+ chain berbeda via Stargate V2",
-      "Stake STG & dapatkan voting power di Snapshot",
-      "Gunakan Merkly Hyperlane / LayerZero messaging"
+      "Bridge assets across supported chains",
+      "Use Stargate V2",
+      "Stake STG",
+      "Complete LayerZero messaging activity"
     ],
     "link": "https://layerzero.network",
     "featured": false,
-    "badge": "💎 Veteran Focus",
+    "badge": "",
     "addedDate": "2026-01-10"
   },
   {
@@ -68,11 +69,11 @@
     "cost": "$10",
     "chain": "Scroll Mainnet",
     "tasks": [
-      "Airdrop snapshot telah diambil dan didistribusikan."
+      "Airdrop snapshot completed and distribution has ended."
     ],
     "link": "https://scroll.io",
     "featured": false,
-    "badge": "🏁 Snapshot Taken",
+    "badge": "Ended",
     "addedDate": "2025-12-01"
   }
 ]
