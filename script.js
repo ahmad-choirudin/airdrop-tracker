@@ -1,116 +1,262 @@
 let airdropData = [];
+
 let activeStatusFilter = 'All';
 let isFavoriteOnly = false;
 let searchQuery = '';
 let currentSort = 'latest';
 
-let bookmarks = JSON.parse(localStorage.getItem('alpha_bookmarks')) || [];
-let completedTasks = JSON.parse(localStorage.getItem('alpha_completed_tasks')) || {};
+let bookmarks = JSON.parse(
+  localStorage.getItem('airdrop_tracker_bookmarks')
+) || [];
+
+let completedTasks = JSON.parse(
+  localStorage.getItem('airdrop_tracker_tasks')
+) || {};
+
 let isWalletConnected = false;
 
-// DOM
 const container = document.getElementById('airdropContainer');
 const searchInput = document.getElementById('searchInput');
+const sortSelect = document.getElementById('sortSelect');
 
 async function fetchAirdrops() {
   try {
-    const res = await fetch('data.json');
-    airdropData = await res.json();
+    const response = await fetch('data.json');
+
+    if (!response.ok) {
+      throw new Error(`Failed to load data: ${response.status}`);
+    }
+
+    airdropData = await response.json();
+
     renderAirdrops();
     updateStats();
-  } catch (e) {
-    console.error('Fetch error:', e);
+
+  } catch (error) {
+    console.error('Failed to load airdrop data:', error);
+
+    container.innerHTML = `
+      <div class="col-span-full empty-state">
+        <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-3"></i>
+        <p class="font-semibold text-slate-700">
+          Could not load project data.
+        </p>
+        <p class="text-xs mt-1">
+          Make sure data.json is in the same folder.
+        </p>
+      </div>
+    `;
+
+    lucide.createIcons();
   }
 }
 
-function renderAirdrops() {
-  let filtered = airdropData.filter(item => {
-    const matchesSearch = item.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.chain.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = activeStatusFilter === 'All' ? true : item.status === activeStatusFilter;
-    const matchesFav = isFavoriteOnly ? bookmarks.includes(item.id) : true;
+function getFilteredProjects() {
+  const query = searchQuery.trim().toLowerCase();
 
-    return matchesSearch && matchesStatus && matchesFav;
+  const filtered = airdropData.filter(project => {
+
+    const searchableText = [
+      project.projectName,
+      project.category,
+      project.chain,
+      project.status
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    const matchesSearch =
+      !query || searchableText.includes(query);
+
+    const matchesStatus =
+      activeStatusFilter === 'All' ||
+      project.status === activeStatusFilter;
+
+    const matchesBookmark =
+      !isFavoriteOnly ||
+      bookmarks.includes(project.id);
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesBookmark
+    );
   });
 
-  // Sort
   if (currentSort === 'name') {
-    filtered.sort((a, b) => a.projectName.localeCompare(b.projectName));
+    filtered.sort((a, b) =>
+      a.projectName.localeCompare(b.projectName)
+    );
   } else {
-    filtered.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
+    filtered.sort(
+      (a, b) =>
+        new Date(b.addedDate) -
+        new Date(a.addedDate)
+    );
   }
+
+  return filtered;
+}
+
+function renderAirdrops() {
+
+  const projects = getFilteredProjects();
 
   container.innerHTML = '';
 
-  if (filtered.length === 0) {
+  if (!projects.length) {
     container.innerHTML = `
-      <div class="col-span-full py-16 text-center text-slate-500 rounded-3xl border border-dashed border-slate-800 bg-brand-card">
-        <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 opacity-40"></i>
-        <p class="text-sm font-medium">No alpha found matching your filter criteria.</p>
-      </div>`;
+      <div class="col-span-full empty-state">
+        <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-3"></i>
+        <p class="font-semibold text-slate-700">
+          No projects found.
+        </p>
+        <p class="text-xs mt-1">
+          Try changing your search or filters.
+        </p>
+      </div>
+    `;
+
     lucide.createIcons();
     return;
   }
 
-  filtered.forEach(item => {
-    const isBookmarked = bookmarks.includes(item.id);
-    const itemTasks = item.tasks || [];
-    const doneCount = (completedTasks[item.id] || []).length;
-    const progressPercent = itemTasks.length ? Math.round((doneCount / itemTasks.length) * 100) : 0;
+  projects.forEach(project => {
 
-    const card = document.createElement('div');
-    card.className = 'airdrop-card p-6 rounded-2xl bg-brand-card border border-slate-800 flex flex-col justify-between space-y-5 relative';
-    
+    const tasks = project.tasks || [];
+
+    const completed = (
+      completedTasks[project.id] || []
+    ).filter(index => index < tasks.length);
+
+    const doneCount = completed.length;
+
+    const progress = tasks.length
+      ? Math.round((doneCount / tasks.length) * 100)
+      : 0;
+
+    const isBookmarked =
+      bookmarks.includes(project.id);
+
+    const card = document.createElement('article');
+
+    card.className =
+      'airdrop-card p-5 flex flex-col';
+
     card.innerHTML = `
-      <div class="space-y-4">
-        <!-- Header -->
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="font-bold text-lg text-white">${item.projectName}</h3>
-              ${item.featured ? `<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">${item.badge}</span>` : ''}
+
+      <div>
+
+        <div class="flex items-start justify-between gap-3">
+
+          <div class="min-w-0">
+
+            <div class="flex items-center gap-2 flex-wrap">
+
+              <h3 class="text-lg font-bold text-slate-900">
+                ${escapeHTML(project.projectName)}
+              </h3>
+
+              ${
+                project.featured && project.badge
+                  ? `
+                    <span class="project-badge">
+                      ${escapeHTML(project.badge)}
+                    </span>
+                  `
+                  : ''
+              }
+
             </div>
-            <span class="text-xs text-slate-400 font-medium">${item.category} • ${item.chain}</span>
+
+            <p class="text-xs text-slate-500 mt-1">
+              ${escapeHTML(project.category)}
+              <span class="mx-1">•</span>
+              ${escapeHTML(project.chain)}
+            </p>
+
           </div>
-          <button onclick="toggleBookmark(${item.id})" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition">
-            <i data-lucide="bookmark" class="w-4 h-4 ${isBookmarked ? 'text-amber-400 fill-amber-400' : ''}"></i>
+
+          <button
+            onclick="toggleBookmark(${project.id})"
+            aria-label="Save ${escapeHTML(project.projectName)}"
+            class="icon-button"
+          >
+            <i
+              data-lucide="bookmark"
+              class="w-4 h-4 ${
+                isBookmarked
+                  ? 'text-indigo-600 fill-indigo-600'
+                  : ''
+              }"
+            ></i>
           </button>
+
         </div>
 
-        <!-- Details -->
-        <div class="grid grid-cols-2 gap-2 text-xs bg-slate-900/60 p-3 rounded-xl border border-slate-800/60">
-          <div>
-            <span class="text-slate-500 block">Est. Reward</span>
-            <span class="font-semibold text-emerald-400">${item.potential}</span>
+        <div class="grid grid-cols-2 gap-2 mt-5">
+
+          <div class="info-box">
+            <span>Estimated reward</span>
+            <strong>
+              ${escapeHTML(project.potential)}
+            </strong>
           </div>
-          <div>
-            <span class="text-slate-500 block">Capital Cost</span>
-            <span class="font-semibold text-slate-200">${item.cost}</span>
+
+          <div class="info-box">
+            <span>Cost</span>
+            <strong class="text-slate-700">
+              ${escapeHTML(project.cost)}
+            </strong>
           </div>
+
         </div>
 
-        <!-- Task Progress -->
-        <div class="space-y-1.5">
-          <div class="flex justify-between text-[11px] font-semibold">
-            <span class="text-slate-400">Execution Progress</span>
-            <span class="text-indigo-400">${doneCount}/${itemTasks.length} Done</span>
+        <div class="mt-5">
+
+          <div class="flex items-center justify-between mb-2">
+
+            <span class="text-xs font-medium text-slate-500">
+              Task progress
+            </span>
+
+            <span class="text-xs font-semibold text-slate-700">
+              ${doneCount}/${tasks.length}
+            </span>
+
           </div>
-          <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div class="h-full bg-indigo-500 transition-all duration-300" style="width: ${progressPercent}%"></div>
+
+          <div class="progress-track">
+            <div
+              class="progress-bar"
+              style="width: ${progress}%"
+            ></div>
           </div>
+
         </div>
+
       </div>
 
-      <!-- Action -->
-      <div class="flex items-center gap-2 pt-2">
-        <button onclick="openModal(${item.id})" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition flex items-center justify-center gap-2">
-          <i data-lucide="list-checks" class="w-4 h-4"></i> View Tasks
+      <div class="flex gap-2 mt-6">
+
+        <button
+          onclick="openModal(${project.id})"
+          class="secondary-button flex-1"
+        >
+          <i data-lucide="list-checks" class="w-4 h-4"></i>
+          Tasks
         </button>
-        <a href="${item.link}" target="_blank" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center">
+
+        <a
+          href="${escapeAttribute(project.link)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="primary-button"
+          aria-label="Open ${escapeHTML(project.projectName)} website"
+        >
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
+
       </div>
     `;
 
@@ -121,137 +267,344 @@ function renderAirdrops() {
 }
 
 function updateStats() {
-  document.getElementById('total-projects').textContent = airdropData.length;
-  document.getElementById('free-projects').textContent = airdropData.filter(i => i.costType === 'Free').length;
-  document.getElementById('featured-projects').textContent = airdropData.filter(i => i.featured).length;
-  document.getElementById('bookmarked-count').textContent = bookmarks.length;
-  document.getElementById('active-count').textContent = airdropData.filter(i => i.status !== 'Ended').length;
+
+  document.getElementById('total-projects').textContent =
+    airdropData.length;
+
+  document.getElementById('free-projects').textContent =
+    airdropData.filter(
+      project => project.costType === 'Free'
+    ).length;
+
+  document.getElementById('featured-projects').textContent =
+    airdropData.filter(
+      project => project.featured
+    ).length;
+
+  document.getElementById('bookmarked-count').textContent =
+    bookmarks.length;
+
+  document.getElementById('active-count').textContent =
+    airdropData.filter(
+      project => project.status !== 'Ended'
+    ).length;
 }
 
 function toggleBookmark(id) {
+
   if (bookmarks.includes(id)) {
-    bookmarks = bookmarks.filter(b => b !== id);
-    showToast('Removed from bookmarks');
+
+    bookmarks = bookmarks.filter(
+      bookmarkId => bookmarkId !== id
+    );
+
+    showToast('Removed from saved projects');
+
   } else {
+
     bookmarks.push(id);
-    showToast('Saved to bookmarks ⭐');
+
+    showToast('Project saved');
+
   }
-  localStorage.setItem('alpha_bookmarks', JSON.stringify(bookmarks));
+
+  localStorage.setItem(
+    'airdrop_tracker_bookmarks',
+    JSON.stringify(bookmarks)
+  );
+
   updateStats();
   renderAirdrops();
 }
 
-// Interactive Task Guide Modal
 function openModal(id) {
-  const item = airdropData.find(i => i.id === id);
-  if (!item) return;
 
-  const userDone = completedTasks[id] || [];
+  const project = airdropData.find(
+    item => item.id === id
+  );
 
-  const modalContent = document.getElementById('modalContent');
+  if (!project) return;
+
+  const completed =
+    completedTasks[id] || [];
+
+  const modal = document.getElementById('guideModal');
+  const modalContent =
+    document.getElementById('modalContent');
+
   modalContent.innerHTML = `
-    <div class="space-y-4">
-      <div class="border-b border-slate-800 pb-4">
-        <div class="flex items-center gap-2">
-          <h2 class="text-2xl font-black text-white">${item.projectName}</h2>
-          <span class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">${item.status}</span>
+
+    <div>
+
+      <div class="pr-8 pb-5 border-b border-slate-200">
+
+        <div class="flex items-center gap-2 flex-wrap">
+
+          <h2 class="text-2xl font-bold text-slate-900">
+            ${escapeHTML(project.projectName)}
+          </h2>
+
+          <span class="status-badge">
+            ${escapeHTML(project.status)}
+          </span>
+
         </div>
-        <p class="text-xs text-slate-400 mt-1">Ecosystem: ${item.chain} • Category: ${item.category}</p>
+
+        <p class="text-xs text-slate-500 mt-2">
+          ${escapeHTML(project.category)}
+          <span class="mx-1">•</span>
+          ${escapeHTML(project.chain)}
+        </p>
+
       </div>
 
-      <div class="space-y-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Step-by-Step Task Checklist</h4>
+      <div class="py-5">
+
+        <div class="flex items-center justify-between mb-3">
+
+          <h3 class="text-sm font-semibold text-slate-900">
+            Task checklist
+          </h3>
+
+          <span class="text-xs text-slate-500">
+            ${completed.length}/${project.tasks.length}
+          </span>
+
+        </div>
+
         <div class="space-y-2">
-          ${item.tasks.map((task, idx) => {
-            const isChecked = userDone.includes(idx);
+
+          ${project.tasks.map((task, index) => {
+
+            const checked =
+              completed.includes(index);
+
             return `
-              <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-slate-700 transition">
-                <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleTaskDone(${id},${idx})" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-0">
-                <span class="text-xs text-slate-200 leading-relaxed ${isChecked ? 'line-through text-slate-500' : ''}">${task}</span>
+              <label class="task-item">
+
+                <input
+                  type="checkbox"
+                  ${checked ? 'checked' : ''}
+                  onchange="toggleTaskDone(${project.id}, ${index})"
+                >
+
+                <span class="${
+                  checked
+                    ? 'line-through text-slate-400'
+                    : 'text-slate-700'
+                }">
+                  ${escapeHTML(task)}
+                </span>
+
               </label>
             `;
+
           }).join('')}
+
         </div>
+
       </div>
 
-      <div class="pt-4 flex gap-3">
-        <a href="${item.link}" target="_blank" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition text-center">
-          Open Official Website <i data-lucide="external-link" class="w-3.5 h-3.5 inline ml-1"></i>
-        </a>
-      </div>
+      <a
+        href="${escapeAttribute(project.link)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="primary-button w-full justify-center"
+      >
+        Open official website
+        <i data-lucide="external-link" class="w-4 h-4"></i>
+      </a>
+
     </div>
   `;
 
-  document.getElementById('guideModal').classList.remove('hidden');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+
   lucide.createIcons();
 }
 
 function closeModal() {
-  document.getElementById('guideModal').classList.add('hidden');
+
+  const modal =
+    document.getElementById('guideModal');
+
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
 }
 
-function toggleTaskDone(projectId, taskIdx) {
-  if (!completedTasks[projectId]) completedTasks[projectId] = [];
-  
-  if (completedTasks[projectId].includes(taskIdx)) {
-    completedTasks[projectId] = completedTasks[projectId].filter(i => i !== taskIdx);
-  } else {
-    completedTasks[projectId].push(taskIdx);
+function toggleTaskDone(projectId, taskIndex) {
+
+  if (!completedTasks[projectId]) {
+    completedTasks[projectId] = [];
   }
 
-  localStorage.setItem('alpha_completed_tasks', JSON.stringify(completedTasks));
+  const tasks =
+    completedTasks[projectId];
+
+  if (tasks.includes(taskIndex)) {
+
+    completedTasks[projectId] =
+      tasks.filter(index => index !== taskIndex);
+
+  } else {
+
+    tasks.push(taskIndex);
+
+  }
+
+  localStorage.setItem(
+    'airdrop_tracker_tasks',
+    JSON.stringify(completedTasks)
+  );
+
   renderAirdrops();
+  openModal(projectId);
 }
 
-// Wallet Simulation
 function toggleWallet() {
-  const btnText = document.getElementById('walletBtnText');
-  if (!isWalletConnected) {
-    isWalletConnected = true;
-    btnText.textContent = '0x09a...71F2';
-    showToast('Wallet Connected!');
-  } else {
-    isWalletConnected = false;
-    btnText.textContent = 'Connect Wallet';
-    showToast('Wallet Disconnected');
-  }
+
+  const button =
+    document.getElementById('walletBtnText');
+
+  isWalletConnected =
+    !isWalletConnected;
+
+  button.textContent =
+    isWalletConnected
+      ? '0x09a...71F2'
+      : 'Demo Wallet';
+
+  showToast(
+    isWalletConnected
+      ? 'Demo wallet connected'
+      : 'Demo wallet disconnected'
+  );
 }
 
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  toast.classList.remove('translate-y-20', 'opacity-0');
+function showToast(message) {
+
+  const toast =
+    document.getElementById('toast');
+
+  document.getElementById('toastMsg')
+    .textContent = message;
+
+  toast.classList.remove(
+    'opacity-0',
+    'translate-y-4'
+  );
+
   setTimeout(() => {
-    toast.classList.add('translate-y-20', 'opacity-0');
-  }, 2200);
+
+    toast.classList.add(
+      'opacity-0',
+      'translate-y-4'
+    );
+
+  }, 2000);
 }
 
-// Search & Filter Events
-searchInput.addEventListener('input', (e) => {
-  searchQuery = e.target.value;
-  renderAirdrops();
-});
-
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const type = btn.getAttribute('data-filter-type');
-    const val = btn.getAttribute('data-value');
-
-    if (type === 'status') {
-      document.querySelectorAll('[data-filter-type="status"]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeStatusFilter = val;
-    } else if (type === 'favorite') {
-      btn.classList.toggle('active');
-      isFavoriteOnly = btn.classList.contains('active');
-    }
+searchInput.addEventListener(
+  'input',
+  event => {
+    searchQuery = event.target.value;
     renderAirdrops();
-  });
-});
+  }
+);
 
-function handleSort() {
-  currentSort = document.getElementById('sortSelect').value;
-  renderAirdrops();
+sortSelect.addEventListener(
+  'change',
+  event => {
+    currentSort = event.target.value;
+    renderAirdrops();
+  }
+);
+
+document
+  .querySelectorAll('.filter-btn')
+  .forEach(button => {
+
+    button.addEventListener(
+      'click',
+      () => {
+
+        const type =
+          button.dataset.filterType;
+
+        const value =
+          button.dataset.value;
+
+        if (type === 'status') {
+
+          document
+            .querySelectorAll(
+              '[data-filter-type="status"]'
+            )
+            .forEach(item =>
+              item.classList.remove('active')
+            );
+
+          button.classList.add('active');
+
+          activeStatusFilter = value;
+
+        }
+
+        if (type === 'favorite') {
+
+          button.classList.toggle('active');
+
+          isFavoriteOnly =
+            button.classList.contains('active');
+
+        }
+
+        renderAirdrops();
+      }
+    );
+  });
+
+document.addEventListener(
+  'keydown',
+  event => {
+
+    if (
+      event.key === 'Escape'
+    ) {
+      closeModal();
+    }
+
+  }
+);
+
+document
+  .getElementById('guideModal')
+  .addEventListener(
+    'click',
+    event => {
+
+      if (
+        event.target.id === 'guideModal'
+      ) {
+        closeModal();
+      }
+
+    }
+  );
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
-document.addEventListener('DOMContentLoaded', fetchAirdrops);
+function escapeAttribute(value) {
+  return escapeHTML(value);
+}
+
+fetchAirdrops();
