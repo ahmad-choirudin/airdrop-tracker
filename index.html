@@ -3,23 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Airdrop Tracker</title>
+  <title>Crypto Airdrop Tracker Pro</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Fonts for Web3 style -->
+  <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Background Animated Glow -->
+  <div class="bg-glow"></div>
+
+  <!-- Navbar -->
   <header class="navbar">
     <div class="logo">
-      <span class="logo-icon">🪂</span>
-      <h2>Airdrop<span>Hunter</span></h2>
+      <div class="logo-icon"><i class="fa-solid fa-parachute-box"></i></div>
+      <h2>Airdrop<span>Pro</span></h2>
     </div>
-    <div class="stats-badge">
-      <span id="active-count">0</span> Active Opportunities
+    <div class="nav-right">
+      <div class="stats-badge">
+        <i class="fa-solid fa-fire"></i> <span id="active-count">0</span> Active Campaigns
+      </div>
     </div>
   </header>
 
@@ -28,33 +34,86 @@
     
     <!-- Hero Section -->
     <section class="hero">
-      <h1>Track & Farm Potential Airdrops</h1>
-      <p>Kumpulan daftar airdrop crypto potensial lengkap dengan panduan dan statusnya.</p>
+      <div class="hero-tag"><i class="fa-solid fa-bolt"></i> Ultimate Web3 Alpha Hub</div>
+      <h1>Farm The Next 100x Airdrops</h1>
+      <p>Lacak, simpan, dan garap potensi airdrop crypto terbaik dengan panduan interaktif.</p>
+    </section>
+
+    <!-- Analytics Dashboard Cards -->
+    <section class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-cubes"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="total-projects">0</span>
+          <span class="stat-label">Total Projects</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="free-projects">0</span>
+          <span class="stat-label">100% Free / Testnet</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="bookmarked-count">0</span>
+          <span class="stat-label">Saved Favorites</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Spotlight Section -->
+    <section class="featured-section">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-crown"></i> Hot Spotlight Airdrops</h3>
+      </div>
+      <div class="featured-grid" id="featuredContainer">
+        <!-- Rendered via JS -->
+      </div>
     </section>
 
     <!-- Controls (Search & Filter) -->
     <section class="controls">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari project (contoh: Monad, LayerZero)...">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Cari project, e.g. Monad, LayerZero...">
       </div>
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-status="All">All</button>
-        <button class="filter-btn" data-status="Testnet">Testnet</button>
-        <button class="filter-btn" data-status="Mainnet">Mainnet</button>
-        <button class="filter-btn" data-status="Ended">Ended</button>
+      
+      <div class="filter-group">
+        <!-- Status Filters -->
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter-type="status" data-value="All">All Status</button>
+          <button class="filter-btn" data-filter-type="status" data-value="Testnet">Testnet</button>
+          <button class="filter-btn" data-filter-type="status" data-value="Mainnet">Mainnet</button>
+          <button class="filter-btn" data-filter-type="status" data-value="Ended">Ended</button>
+        </div>
+
+        <!-- Cost & Favorite Filters -->
+        <div class="filter-buttons secondary">
+          <button class="filter-btn" data-filter-type="cost" data-value="Free"><i class="fa-solid fa-gift"></i> Free Only</button>
+          <button class="filter-btn" data-filter-type="cost" data-value="Paid"><i class="fa-solid fa-gas-pump"></i> Mainnet Gas</button>
+          <button class="filter-btn fav-btn-filter" data-filter-type="favorite" data-value="Bookmark"><i class="fa-solid fa-bookmark"></i> Favorites</button>
+        </div>
       </div>
     </section>
 
-    <!-- Cards Grid -->
+    <!-- Main Cards Grid -->
     <section class="airdrop-grid" id="airdropContainer">
-      <!-- Data dari JSON akan dirender di sini via JavaScript -->
+      <!-- Rendered via JS -->
     </section>
 
   </main>
 
+  <!-- Toast Notification for Copy / Bookmark -->
+  <div id="toast" class="toast">
+    <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Success!</span>
+  </div>
+
   <!-- Footer -->
   <footer>
-    <p>&copy; 2026 Airdrop Tracker. Built for Web3 Hunters.</p>
+    <p>&copy; 2026 AirdropPro Hub • Built for Web3 Hunters & Alpha Researchers.</p>
   </footer>
 
   <script src="script.js"></script>
