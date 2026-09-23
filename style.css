@@ -2,7 +2,7 @@
 .filter-btn.active {
   background-color: #4f46e5 !important;
   color: #ffffff !important;
-  box-shadow: 0 0 12px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
 }
 
 /* Custom Scrollbar */
@@ -10,21 +10,24 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
 }
 
 /* Card Hover Animation */
 .airdrop-card {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .airdrop-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: #c7d2fe;
+  box-shadow: 0 12px 24px -6px rgba(79, 70, 229, 0.08);
 }
