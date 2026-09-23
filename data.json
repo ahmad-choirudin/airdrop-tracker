@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Base",
+    "type": "Testnet",
+    "status": "Active",
+    "chain": "Ethereum",
+    "reward": "TBA"
+  },
+  {
+    "name": "LayerZero",
+    "type": "Airdrop",
+    "status": "Active",
+    "chain": "Multi-chain",
+    "reward": "TBA"
+  },
+  {
+    "name": "Berachain",
+    "type": "Airdrop",
+    "status": "Ended",
+    "chain": "Berachain",
+    "reward": "BERA"
+  }
+]
