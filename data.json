@@ -4,43 +4,51 @@
     "projectName": "Monad",
     "category": "Layer 1",
     "status": "Testnet",
+    "costType": "Free",
     "potential": "$1,000 - $5,000",
     "cost": "Free",
     "tasks": "Testnet swap, bridge, & interact with ecosystem dApps",
     "link": "https://monad.xyz",
-    "featured": true
+    "featured": true,
+    "badge": "🔥 Hot Potential"
   },
   {
     "id": 2,
     "projectName": "Berachain",
     "category": "Layer 1 (Proof of Liquidity)",
     "status": "Testnet",
+    "costType": "Free",
     "potential": "$500 - $3,000",
     "cost": "Free",
     "tasks": "Faucet, BEX swap, Honey minting, Bend supply",
     "link": "https://berachain.com",
-    "featured": true
+    "featured": true,
+    "badge": "⚡ Confirmed Airdrop"
   },
   {
     "id": 3,
     "projectName": "LayerZero V2",
     "category": "Interoperability",
     "status": "Mainnet",
+    "costType": "Paid",
     "potential": "$1,000+",
     "cost": "$10 - $50 (Gas)",
     "tasks": "Cross-chain bridge transactions, Staking STG",
     "link": "https://layerzero.network",
-    "featured": false
+    "featured": false,
+    "badge": "💎 Tier 1"
   },
   {
     "id": 4,
     "projectName": "Scroll",
     "category": "zkEVM Layer 2",
     "status": "Ended",
+    "costType": "Paid",
     "potential": "Distributed",
     "cost": "$5 - $20",
     "tasks": "Airdrop distribution completed",
     "link": "https://scroll.io",
-    "featured": false
+    "featured": false,
+    "badge": "🏁 Completed"
   }
 ]
