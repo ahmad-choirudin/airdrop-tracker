@@ -1,610 +1,337 @@
-let airdropData = [];
+let data = [];
+let filterStatus = 'All';
+let onlySaved = false;
+let query = '';
+let sortBy = 'latest';
+let walletOn = false;
+let toastTimer;
 
-let activeStatusFilter = 'All';
-let isFavoriteOnly = false;
-let searchQuery = '';
-let currentSort = 'latest';
+let saved = readLS('airdrop_tracker_bookmarks', []);
+let doneTasks = readLS('airdrop_tracker_tasks', {});
 
-let bookmarks = JSON.parse(
-  localStorage.getItem('airdrop_tracker_bookmarks')
-) || [];
+const grid = document.getElementById('airdropContainer');
+const searchEl = document.getElementById('searchInput');
+const sortEl = document.getElementById('sortSelect');
+const modal = document.getElementById('guideModal');
 
-let completedTasks = JSON.parse(
-  localStorage.getItem('airdrop_tracker_tasks')
-) || {};
-
-let isWalletConnected = false;
-
-const container = document.getElementById('airdropContainer');
-const searchInput = document.getElementById('searchInput');
-const sortSelect = document.getElementById('sortSelect');
-
-async function fetchAirdrops() {
+function readLS(key, fallback) {
   try {
-    const response = await fetch('data.json');
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
-    if (!response.ok) {
-      throw new Error(`Failed to load data: ${response.status}`);
-    }
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  }[c]));
+}
 
-    airdropData = await response.json();
+async function loadData() {
+  try {
+    const res = await fetch('data.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
 
-    renderAirdrops();
+    data = await res.json();
+    render();
     updateStats();
-
-  } catch (error) {
-    console.error('Failed to load airdrop data:', error);
-
-    container.innerHTML = `
+  } catch (err) {
+    console.error(err);
+    grid.innerHTML = `
       <div class="col-span-full empty-state">
         <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-3"></i>
-        <p class="font-semibold text-slate-700">
-          Could not load project data.
-        </p>
-        <p class="text-xs mt-1">
-          Make sure data.json is in the same folder.
-        </p>
-      </div>
-    `;
-
+        <p class="font-semibold text-slate-700">Could not load project data.</p>
+        <p class="text-xs mt-1">Make sure data.json is in the same folder.</p>
+      </div>`;
     lucide.createIcons();
   }
 }
 
-function getFilteredProjects() {
-  const query = searchQuery.trim().toLowerCase();
+function getVisible() {
+  const q = query.trim().toLowerCase();
 
-  const filtered = airdropData.filter(project => {
+  const list = data.filter(p => {
+    const text = [p.projectName, p.category, p.chain, p.status, (p.tasks || []).join(' ')]
+      .join(' ').toLowerCase();
 
-    const searchableText = [
-      project.projectName,
-      project.category,
-      project.chain,
-      project.status
-    ]
-      .join(' ')
-      .toLowerCase();
-
-    const matchesSearch =
-      !query || searchableText.includes(query);
-
-    const matchesStatus =
-      activeStatusFilter === 'All' ||
-      project.status === activeStatusFilter;
-
-    const matchesBookmark =
-      !isFavoriteOnly ||
-      bookmarks.includes(project.id);
-
-    return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesBookmark
-    );
+    if (q && !text.includes(q)) return false;
+    if (filterStatus !== 'All' && p.status !== filterStatus) return false;
+    if (onlySaved && !saved.includes(p.id)) return false;
+    return true;
   });
 
-  if (currentSort === 'name') {
-    filtered.sort((a, b) =>
-      a.projectName.localeCompare(b.projectName)
-    );
+  if (sortBy === 'name') {
+    list.sort((a, b) => a.projectName.localeCompare(b.projectName));
   } else {
-    filtered.sort(
-      (a, b) =>
-        new Date(b.addedDate) -
-        new Date(a.addedDate)
-    );
+    list.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
   }
 
-  return filtered;
+  return list;
 }
 
-function renderAirdrops() {
+function getProgress(p) {
+  const tasks = p.tasks || [];
+  const done = (doneTasks[p.id] || []).filter(t => tasks.includes(t)).length;
+  return {
+    done,
+    total: tasks.length,
+    pct: tasks.length ? Math.round(done / tasks.length * 100) : 0
+  };
+}
 
-  const projects = getFilteredProjects();
+function render() {
+  const list = getVisible();
+  grid.innerHTML = '';
 
-  container.innerHTML = '';
-
-  if (!projects.length) {
-    container.innerHTML = `
+  if (!list.length) {
+    grid.innerHTML = `
       <div class="col-span-full empty-state">
         <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-3"></i>
-        <p class="font-semibold text-slate-700">
-          No projects found.
-        </p>
-        <p class="text-xs mt-1">
-          Try changing your search or filters.
-        </p>
-      </div>
-    `;
-
+        <p class="font-semibold text-slate-700">No projects found.</p>
+        <p class="text-xs mt-1">Try changing your search or filters.</p>
+      </div>`;
     lucide.createIcons();
     return;
   }
 
-  projects.forEach(project => {
-
-    const tasks = project.tasks || [];
-
-    const completed = (
-      completedTasks[project.id] || []
-    ).filter(index => index < tasks.length);
-
-    const doneCount = completed.length;
-
-    const progress = tasks.length
-      ? Math.round((doneCount / tasks.length) * 100)
-      : 0;
-
-    const isBookmarked =
-      bookmarks.includes(project.id);
+  for (const p of list) {
+    const prog = getProgress(p);
+    const marked = saved.includes(p.id);
 
     const card = document.createElement('article');
-
-    card.className =
-      'airdrop-card p-5 flex flex-col';
+    card.className = 'airdrop-card p-5 flex flex-col';
+    card.dataset.id = p.id;
 
     card.innerHTML = `
-
       <div>
-
         <div class="flex items-start justify-between gap-3">
-
           <div class="min-w-0">
-
             <div class="flex items-center gap-2 flex-wrap">
-
-              <h3 class="text-lg font-bold text-slate-900">
-                ${escapeHTML(project.projectName)}
-              </h3>
-
-              ${
-                project.featured && project.badge
-                  ? `
-                    <span class="project-badge">
-                      ${escapeHTML(project.badge)}
-                    </span>
-                  `
-                  : ''
-              }
-
+              <h3 class="text-lg font-bold text-slate-900">${esc(p.projectName)}</h3>
+              ${p.featured && p.badge ? `<span class="project-badge">${esc(p.badge)}</span>` : ''}
             </div>
-
             <p class="text-xs text-slate-500 mt-1">
-              ${escapeHTML(project.category)}
-              <span class="mx-1">•</span>
-              ${escapeHTML(project.chain)}
+              ${esc(p.category)} <span class="mx-1">•</span> ${esc(p.chain)}
             </p>
-
           </div>
 
-          <button
-            onclick="toggleBookmark(${project.id})"
-            aria-label="Save ${escapeHTML(project.projectName)}"
-            class="icon-button"
-          >
-            <i
-              data-lucide="bookmark"
-              class="w-4 h-4 ${
-                isBookmarked
-                  ? 'text-indigo-600 fill-indigo-600'
-                  : ''
-              }"
-            ></i>
+          <button onclick="toggleSaved(${p.id})" class="icon-button">
+            <i data-lucide="bookmark" class="w-4 h-4 ${marked ? 'text-emerald-600 fill-emerald-600' : ''}"></i>
           </button>
-
         </div>
 
         <div class="grid grid-cols-2 gap-2 mt-5">
-
           <div class="info-box">
             <span>Estimated reward</span>
-            <strong>
-              ${escapeHTML(project.potential)}
-            </strong>
+            <strong>${esc(p.potential)}</strong>
           </div>
-
           <div class="info-box">
             <span>Cost</span>
-            <strong class="text-slate-700">
-              ${escapeHTML(project.cost)}
-            </strong>
+            <strong class="text-slate-700">${esc(p.cost)}</strong>
           </div>
-
         </div>
 
         <div class="mt-5">
-
           <div class="flex items-center justify-between mb-2">
-
-            <span class="text-xs font-medium text-slate-500">
-              Task progress
-            </span>
-
-            <span class="text-xs font-semibold text-slate-700">
-              ${doneCount}/${tasks.length}
-            </span>
-
+            <span class="text-xs font-medium text-slate-500">Task progress</span>
+            <span class="text-xs font-semibold text-slate-700 prog-${p.id}">${prog.done}/${prog.total}</span>
           </div>
-
           <div class="progress-track">
-            <div
-              class="progress-bar"
-              style="width: ${progress}%"
-            ></div>
+            <div class="progress-bar" style="width: ${prog.pct}%"></div>
           </div>
-
         </div>
-
       </div>
 
       <div class="flex gap-2 mt-6">
-
-        <button
-          onclick="openModal(${project.id})"
-          class="secondary-button flex-1"
-        >
+        <button onclick="openTasks(${p.id})" class="secondary-button flex-1">
           <i data-lucide="list-checks" class="w-4 h-4"></i>
           Tasks
         </button>
-
-        <a
-          href="${escapeAttribute(project.link)}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="primary-button"
-          aria-label="Open ${escapeHTML(project.projectName)} website"
-        >
+        <a href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" class="primary-button">
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
-
       </div>
     `;
 
-    container.appendChild(card);
-  });
+    grid.appendChild(card);
+  }
 
   lucide.createIcons();
 }
 
 function updateStats() {
+  document.getElementById('total-projects').textContent = data.length;
+  document.getElementById('free-projects').textContent = data.filter(p => p.costType === 'Free').length;
+  document.getElementById('featured-projects').textContent = data.filter(p => p.featured).length;
+  document.getElementById('active-count').textContent = data.filter(p => p.status !== 'Ended').length;
 
-  document.getElementById('total-projects').textContent =
-    airdropData.length;
-
-  document.getElementById('free-projects').textContent =
-    airdropData.filter(
-      project => project.costType === 'Free'
-    ).length;
-
-  document.getElementById('featured-projects').textContent =
-    airdropData.filter(
-      project => project.featured
-    ).length;
-
-  document.getElementById('bookmarked-count').textContent =
-    bookmarks.length;
-
-  document.getElementById('active-count').textContent =
-    airdropData.filter(
-      project => project.status !== 'Ended'
-    ).length;
+  // cuma hitung bookmark yang project-nya masih ada
+  const valid = saved.filter(id => data.some(p => p.id === id));
+  document.getElementById('bookmarked-count').textContent = valid.length;
 }
 
-function toggleBookmark(id) {
-
-  if (bookmarks.includes(id)) {
-
-    bookmarks = bookmarks.filter(
-      bookmarkId => bookmarkId !== id
-    );
-
-    showToast('Removed from saved projects');
-
+function toggleSaved(id) {
+  if (saved.includes(id)) {
+    saved = saved.filter(x => x !== id);
+    showToast('Removed from saved');
   } else {
-
-    bookmarks.push(id);
-
+    saved.push(id);
     showToast('Project saved');
-
   }
 
-  localStorage.setItem(
-    'airdrop_tracker_bookmarks',
-    JSON.stringify(bookmarks)
-  );
-
+  localStorage.setItem('airdrop_tracker_bookmarks', JSON.stringify(saved));
   updateStats();
-  renderAirdrops();
+  render();
 }
 
-function openModal(id) {
+function openTasks(id) {
+  const p = data.find(x => x.id === id);
+  if (!p) return;
 
-  const project = airdropData.find(
-    item => item.id === id
-  );
+  const tasks = p.tasks || [];
+  const done = doneTasks[id] || [];
+  const count = done.filter(t => tasks.includes(t)).length;
 
-  if (!project) return;
-
-  const completed =
-    completedTasks[id] || [];
-
-  const modal = document.getElementById('guideModal');
-  const modalContent =
-    document.getElementById('modalContent');
-
-  modalContent.innerHTML = `
-
+  document.getElementById('modalContent').innerHTML = `
     <div>
-
       <div class="pr-8 pb-5 border-b border-slate-200">
-
         <div class="flex items-center gap-2 flex-wrap">
-
-          <h2 class="text-2xl font-bold text-slate-900">
-            ${escapeHTML(project.projectName)}
-          </h2>
-
-          <span class="status-badge">
-            ${escapeHTML(project.status)}
-          </span>
-
+          <h2 class="text-2xl font-bold text-slate-900">${esc(p.projectName)}</h2>
+          <span class="status-badge">${esc(p.status)}</span>
         </div>
-
         <p class="text-xs text-slate-500 mt-2">
-          ${escapeHTML(project.category)}
-          <span class="mx-1">•</span>
-          ${escapeHTML(project.chain)}
+          ${esc(p.category)} <span class="mx-1">•</span> ${esc(p.chain)}
         </p>
-
       </div>
 
       <div class="py-5">
-
         <div class="flex items-center justify-between mb-3">
-
-          <h3 class="text-sm font-semibold text-slate-900">
-            Task checklist
-          </h3>
-
-          <span class="text-xs text-slate-500">
-            ${completed.length}/${project.tasks.length}
-          </span>
-
+          <h3 class="text-sm font-semibold text-slate-900">Task checklist</h3>
+          <span class="text-xs text-slate-500 modal-count">${count}/${tasks.length}</span>
         </div>
 
         <div class="space-y-2">
-
-          ${project.tasks.map((task, index) => {
-
-            const checked =
-              completed.includes(index);
-
+          ${tasks.map(task => {
+            const checked = done.includes(task);
             return `
               <label class="task-item">
-
-                <input
-                  type="checkbox"
-                  ${checked ? 'checked' : ''}
-                  onchange="toggleTaskDone(${project.id}, ${index})"
-                >
-
-                <span class="${
-                  checked
-                    ? 'line-through text-slate-400'
-                    : 'text-slate-700'
-                }">
-                  ${escapeHTML(task)}
-                </span>
-
-              </label>
-            `;
-
+                <input type="checkbox" data-task="${esc(task)}" ${checked ? 'checked' : ''}
+                  onchange="toggleTask(${p.id}, this)">
+                <span class="${checked ? 'line-through text-slate-400' : 'text-slate-700'}">${esc(task)}</span>
+              </label>`;
           }).join('')}
-
         </div>
-
       </div>
 
-      <a
-        href="${escapeAttribute(project.link)}"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="primary-button w-full justify-center"
-      >
+      <a href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" class="primary-button w-full justify-center">
         Open official website
         <i data-lucide="external-link" class="w-4 h-4"></i>
       </a>
-
     </div>
   `;
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
-
   lucide.createIcons();
 }
 
 function closeModal() {
-
-  const modal =
-    document.getElementById('guideModal');
-
   modal.classList.add('hidden');
   modal.classList.remove('flex');
 }
 
-function toggleTaskDone(projectId, taskIndex) {
+function toggleTask(projectId, checkbox) {
+  const task = checkbox.dataset.task;
 
-  if (!completedTasks[projectId]) {
-    completedTasks[projectId] = [];
-  }
+  if (!doneTasks[projectId]) doneTasks[projectId] = [];
 
-  const tasks =
-    completedTasks[projectId];
+  const list = doneTasks[projectId];
+  const i = list.indexOf(task);
+  if (i > -1) list.splice(i, 1);
+  else list.push(task);
 
-  if (tasks.includes(taskIndex)) {
+  localStorage.setItem('airdrop_tracker_tasks', JSON.stringify(doneTasks));
 
-    completedTasks[projectId] =
-      tasks.filter(index => index !== taskIndex);
-
+  // update span strikethrough tanpa rebuild
+  const span = checkbox.closest('label').querySelector('span');
+  if (checkbox.checked) {
+    span.classList.add('line-through', 'text-slate-400');
+    span.classList.remove('text-slate-700');
   } else {
-
-    tasks.push(taskIndex);
-
+    span.classList.remove('line-through', 'text-slate-400');
+    span.classList.add('text-slate-700');
   }
 
-  localStorage.setItem(
-    'airdrop_tracker_tasks',
-    JSON.stringify(completedTasks)
-  );
+  // update counter di card & modal, tanpa re-render
+  const p = data.find(x => x.id === projectId);
+  const prog = getProgress(p);
 
-  renderAirdrops();
-  openModal(projectId);
+  const cardCounter = document.querySelector(`.prog-${projectId}`);
+  if (cardCounter) cardCounter.textContent = `${prog.done}/${prog.total}`;
+
+  const card = grid.querySelector(`[data-id="${projectId}"]`);
+  if (card) card.querySelector('.progress-bar').style.width = prog.pct + '%';
+
+  const modalCounter = document.querySelector('.modal-count');
+  if (modalCounter) modalCounter.textContent = `${prog.done}/${prog.total}`;
 }
 
 function toggleWallet() {
-
-  const button =
-    document.getElementById('walletBtnText');
-
-  isWalletConnected =
-    !isWalletConnected;
-
-  button.textContent =
-    isWalletConnected
-      ? '0x09a...71F2'
-      : 'Demo Wallet';
-
-  showToast(
-    isWalletConnected
-      ? 'Demo wallet connected'
-      : 'Demo wallet disconnected'
-  );
+  walletOn = !walletOn;
+  document.getElementById('walletBtnText').textContent =
+    walletOn ? '0x09a...71F2' : 'Demo Wallet';
+  showToast(walletOn ? 'Demo wallet connected' : 'Demo wallet disconnected');
 }
 
-function showToast(message) {
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.remove('opacity-0', 'translate-y-4');
 
-  const toast =
-    document.getElementById('toast');
-
-  document.getElementById('toastMsg')
-    .textContent = message;
-
-  toast.classList.remove(
-    'opacity-0',
-    'translate-y-4'
-  );
-
-  setTimeout(() => {
-
-    toast.classList.add(
-      'opacity-0',
-      'translate-y-4'
-    );
-
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.add('opacity-0', 'translate-y-4');
   }, 2000);
 }
 
-searchInput.addEventListener(
-  'input',
-  event => {
-    searchQuery = event.target.value;
-    renderAirdrops();
-  }
-);
+searchEl.addEventListener('input', e => {
+  query = e.target.value;
+  render();
+});
 
-sortSelect.addEventListener(
-  'change',
-  event => {
-    currentSort = event.target.value;
-    renderAirdrops();
-  }
-);
+sortEl.addEventListener('change', e => {
+  sortBy = e.target.value;
+  render();
+});
 
-document
-  .querySelectorAll('.filter-btn')
-  .forEach(button => {
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.filterType;
+    const val = btn.dataset.value;
 
-    button.addEventListener(
-      'click',
-      () => {
+    if (type === 'status') {
+      document.querySelectorAll('[data-filter-type="status"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterStatus = val;
+    }
 
-        const type =
-          button.dataset.filterType;
+    if (type === 'favorite') {
+      btn.classList.toggle('active');
+      onlySaved = btn.classList.contains('active');
+    }
 
-        const value =
-          button.dataset.value;
-
-        if (type === 'status') {
-
-          document
-            .querySelectorAll(
-              '[data-filter-type="status"]'
-            )
-            .forEach(item =>
-              item.classList.remove('active')
-            );
-
-          button.classList.add('active');
-
-          activeStatusFilter = value;
-
-        }
-
-        if (type === 'favorite') {
-
-          button.classList.toggle('active');
-
-          isFavoriteOnly =
-            button.classList.contains('active');
-
-        }
-
-        renderAirdrops();
-      }
-    );
+    render();
   });
+});
 
-document.addEventListener(
-  'keydown',
-  event => {
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 
-    if (
-      event.key === 'Escape'
-    ) {
-      closeModal();
-    }
+modal.addEventListener('click', e => {
+  if (e.target === modal) closeModal();
+});
 
-  }
-);
-
-document
-  .getElementById('guideModal')
-  .addEventListener(
-    'click',
-    event => {
-
-      if (
-        event.target.id === 'guideModal'
-      ) {
-        closeModal();
-      }
-
-    }
-  );
-
-function escapeHTML(value) {
-
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-function escapeAttribute(value) {
-  return escapeHTML(value);
-}
-
-fetchAirdrops();
+loadData();
