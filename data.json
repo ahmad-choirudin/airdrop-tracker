@@ -1,47 +1,47 @@
 [
   {
     "id": 1,
-    "projectName": "Monad",
+    "projectName": "Somnia",
     "category": "EVM Layer 1",
     "status": "Testnet",
     "costType": "Free",
     "potential": "$1,500 - $5,000",
     "cost": "$0",
-    "chain": "Monad Testnet",
+    "chain": "Somnia Testnet",
     "tasks": [
       "Claim testnet faucet",
-      "Complete swaps on Monad DEX",
+      "Complete swaps on Somnia DEX",
       "Deploy a smart contract",
       "Join the official Discord"
     ],
-    "link": "https://monad.xyz",
+    "link": "https://somnia.network",
     "featured": true,
     "badge": "High Priority",
     "addedDate": "2026-02-15"
   },
   {
     "id": 2,
-    "projectName": "Berachain",
-    "category": "PoL Layer 1",
+    "projectName": "Hyperliquid",
+    "category": "Perp DEX L1",
     "status": "Testnet",
     "costType": "Free",
     "potential": "$800 - $3,500",
     "cost": "$0",
-    "chain": "Berachain Artio",
+    "chain": "Hyperliquid Testnet",
     "tasks": [
       "Claim testnet faucet",
-      "Mint HONEY on BEX",
-      "Supply HONEY to Bend",
-      "Delegate BGT"
+      "Open a perp position",
+      "Provide liquidity to vault",
+      "Complete daily trading volume"
     ],
-    "link": "https://berachain.com",
+    "link": "https://hyperliquid.xyz",
     "featured": true,
     "badge": "Confirmed",
     "addedDate": "2026-02-20"
   },
   {
     "id": 3,
-    "projectName": "LayerZero V2",
+    "projectName": "Wormhole",
     "category": "Interoperability",
     "status": "Mainnet",
     "costType": "Paid",
@@ -50,28 +50,28 @@
     "chain": "Multi-Chain",
     "tasks": [
       "Bridge assets across supported chains",
-      "Use Stargate V2",
-      "Stake STG",
-      "Complete LayerZero messaging activity"
+      "Use Portal Bridge",
+      "Stake W",
+      "Complete Wormhole messaging activity"
     ],
-    "link": "https://layerzero.network",
+    "link": "https://wormhole.com",
     "featured": false,
     "badge": "",
     "addedDate": "2026-01-10"
   },
   {
     "id": 4,
-    "projectName": "Scroll",
-    "category": "zkEVM L2",
+    "projectName": "Starknet",
+    "category": "zk-Rollup L2",
     "status": "Ended",
     "costType": "Paid",
     "potential": "Distributed",
     "cost": "$10",
-    "chain": "Scroll Mainnet",
+    "chain": "Starknet Mainnet",
     "tasks": [
       "Airdrop snapshot completed and distribution has ended."
     ],
-    "link": "https://scroll.io",
+    "link": "https://starknet.io",
     "featured": false,
     "badge": "Ended",
     "addedDate": "2025-12-01"
