@@ -68,7 +68,7 @@ export default function App(){
   const live=data.filter(p=>p.s!=='Ended').sort((a,b)=>a.dl-b.dl)
   const allT=data.flatMap(p=>getT(p.id)),done=allT.filter(x=>x.s==='done').length,total=Math.round(done/allT.length*100)
   const overdue=data.filter(p=>p.dl<0&&p.s!=='Ended'&&pct(p.id)<100)
-  const board=data.flatMap(d=>getT(d.id).map((x,i)=>({...x,p:d,i}))).map((x,n)=>({...x,id:'T-'+String(n+1).padStart(3,'0')}))
+  const board=data.flatMap(d=>getT(d.id).map((x,i)=>({...x,p:d,i}))).map(x=>({...x,id:'T-'+String(x.p.id).padStart(2,'0')+'-'+String(x.i+1).padStart(2,'0')}))
   const cnt=k=>board.filter(x=>x.p.s!=='Ended'&&(k==='all'||x.s===k)).length
   const tags=[...new Set(data.flatMap(d=>[d.c,d.k]))]
   const vis=board.filter(x=>(vw==='archived'?x.p.s==='Ended':x.p.s!=='Ended'&&(vw==='all'||x.s===vw))&&(!pf||prio(x.p)===pf)&&(!pj||x.p.id===+pj)&&(!tg||x.p.c===tg||x.p.k===tg)&&x.t.toLowerCase().includes(tq.toLowerCase()))
@@ -126,7 +126,7 @@ export default function App(){
             <h2 className="font-bold mb-2">Task progress by project <span className="text-accent text-sm">· overall <Count to={total}/>%</span></h2>
             <svg viewBox="0 0 600 200" className="w-full"><defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stopColor="#39ff88"/><stop offset=".5" stopColor="#39ff88"/><stop offset="1" stopColor="#39ff88"/></linearGradient><linearGradient id="ha" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#39ff88" stopOpacity=".35"/><stop offset="1" stopColor="#39ff88" stopOpacity="0"/></linearGradient></defs>
               {[0,50,100].map(v=><g key={v}><line x1="40" x2="580" y1={170-v*1.4} y2={170-v*1.4} stroke="#1a2e1f"/><text x="4" y={174-v*1.4} fill="#71717a" fontSize="11">{v}%</text></g>)}
-              <path d={path+` L${pts[pts.length-1][0]} 170 L${pts[0][0]} 170Z`} fill="url(#ha)" className="fade-in" style={{animationDelay:'1.1s'}}/>
+              <path d={pts.length?path+` L${pts[pts.length-1][0]} 170 L${pts[0][0]} 170Z`:''} fill="url(#ha)" className="fade-in" style={{animationDelay:'1.1s'}}/>
               <path d={path} fill="none" stroke="url(#hg)" strokeWidth="2.5" pathLength="1" className="draw"/>
               {pts.map((a,i)=><g key={i} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)} onClick={()=>setHov(i)}><circle cx={a[0]} cy={a[1]} r={hov===i?6:4} fill="#fff" className="dot"/><circle cx={a[0]} cy={a[1]} r="16" fill="transparent"/><text x={a[0]} y="192" fill="#a1a1aa" fontSize="11" textAnchor="middle">{live[i].n.slice(0,9)}</text></g>)}
             </svg>
