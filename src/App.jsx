@@ -11,7 +11,9 @@ const same=(a,b)=>a.toDateString()===b.toDateString()
 const tone={Confirmed:'text-accent border-accent/40',Potential:'text-amber-300 border-amber-300/40',Unverified:'text-red-400 border-red-400/40'}
 const PR={High:0,Medium:1,Low:2}
 const days=d=>Math.round((new Date(d+'T00:00:00')-t0())/DAY)
-const data=raw.map(p=>{const dl=days(p.deadline);return{...p,dl,ad:days(p.added),v:-days(p.verified),s:dl<-7?'Ended':p.s}})
+const safe=u=>/^https?:\/\//i.test(u||'')?u:'#'
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')
+const norm=p=>{const dl=days(p.deadline);return{...p,w:safe(p.w),x:safe(p.x),dl,ad:days(p.ad?p.added:p.added),v:-days(p.verified),s:dl<-7?'Ended':p.s}}
 const ST=[['Active','bg-accent'],['Upcoming','bg-amber-400'],['Ended','bg-zinc-500']]
 const PC={High:'text-red-400',Medium:'text-amber-400',Low:'text-zinc-400'}
 const NAV=[['dash','Dashboard',LayoutDashboard],['explore','Explore',Compass],['tasks','Tasks',ListChecks],['cal','Calendar',CalendarDays],['watch','Watchlist',Star]]
@@ -51,7 +53,8 @@ export default function App(){
   const [view,setView]=useState('dash'),[open,setOpen]=useState(null),[mode,setMode]=useState('list'),[mo,setMo]=useState(0)
   const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[col,setCol]=useState('todo'),[pj,setPj]=useState(''),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
   const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl'),[tk,setTk]=useState(''),[st,setSt]=useState('All')
-  const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[])
+  const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[]),[custom,setCustom]=useLS('at-custom',[])
+  const data=[...raw,...custom].map(norm)
   const getT=id=>tasks[id]||DEF.map(t=>({t,s:'todo'}))
   const pct=id=>{const a=getT(id);return Math.round(a.filter(x=>x.s==='done').length/a.length*100)}
   const note=(m,ty)=>setLog(l=>[{m,ty,t:Date.now()},...l].slice(0,30))
@@ -63,10 +66,10 @@ export default function App(){
   const taskTypes=[...new Set(data.flatMap(p=>(p.task||'').split(', ').filter(Boolean)))]
   const chains=['All',...new Set(data.map(p=>p.c))],cats=['All',...new Set(data.map(p=>p.k))]
 
-  const list=data.filter(p=>p.n.toLowerCase().includes(q.toLowerCase())&&(chain==='All'||p.c===chain)&&(cat==='All'||(cat==='New'?p.ad>-7:cat==='Popular'?p.i==='Confirmed':p.k===cat))&&(!tk||(p.task||'').split(', ').includes(tk))&&(st==='All'||p.s===st))
+  const list=data.filter(p=>(p.n+' '+p.c+' '+p.k).toLowerCase().includes(q.toLowerCase())&&(chain==='All'||p.c===chain)&&(cat==='All'||(cat==='New'?p.ad>-7:cat==='Popular'?p.i==='Confirmed':p.k===cat))&&(!tk||(p.task||'').split(', ').includes(tk))&&(st==='All'||p.s===st))
     .sort((a,b)=>sort==='dl'?a.dl-b.dl:sort==='ad'?b.ad-a.ad:PR[prio(a)]-PR[prio(b)])
   const live=data.filter(p=>p.s!=='Ended').sort((a,b)=>a.dl-b.dl)
-  const allT=data.flatMap(p=>getT(p.id)),done=allT.filter(x=>x.s==='done').length,total=Math.round(done/allT.length*100)
+  const allT=data.flatMap(p=>getT(p.id)),done=allT.filter(x=>x.s==='done').length,total=allT.length?Math.round(done/allT.length*100):0
   const overdue=data.filter(p=>p.dl<0&&p.s!=='Ended'&&pct(p.id)<100)
   const board=data.flatMap(d=>getT(d.id).map((x,i)=>({...x,p:d,i}))).map(x=>({...x,id:'T-'+String(x.p.id).padStart(2,'0')+'-'+String(x.i+1).padStart(2,'0')}))
   const cnt=k=>board.filter(x=>x.p.s!=='Ended'&&(k==='all'||x.s===k)).length
@@ -76,6 +79,26 @@ export default function App(){
   const path=pts.map((a,i)=>(i?'L':'M')+a[0]+' '+a[1]).join(' ')
   const p=data.find(x=>x.id===open)
 
+  const exportData=()=>{
+    const a=document.createElement('a')
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'airdrop-tracker',v:1,tasks,watch:w,log,custom},null,2)],{type:'application/json'}))
+    a.download='airdrop-tracker-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+  }
+  const importData=e=>{
+    const f=e.target.files[0];e.target.value='';if(!f)return
+    if(!confirm('Replace current data with this backup?'))return
+    const rd=new FileReader()
+    rd.onload=()=>{try{
+      const d=JSON.parse(rd.result),obj=o=>o&&typeof o==='object'&&!Array.isArray(o),D=/^\d{4}-\d{2}-\d{2}$/
+      if(d.app!=='airdrop-tracker')throw 0
+      if(obj(d.tasks)&&Object.values(d.tasks).every(a=>Array.isArray(a)&&a.every(x=>x&&typeof x.t==='string'&&['todo','doing','done'].includes(x.s))))setTasks(d.tasks)
+      if(obj(d.watch))setW(d.watch)
+      if(Array.isArray(d.log))setLog(d.log.slice(0,30))
+      if(Array.isArray(d.custom))setCustom(d.custom.filter(c=>c&&typeof c.id==='number'&&typeof c.n==='string'&&D.test(c.deadline)&&D.test(c.added)&&D.test(c.verified)))
+      alert('Data imported.')
+    }catch{alert('Invalid backup file.')}}
+    rd.readAsText(f)
+  }
   const remind=async()=>{
     if(!('Notification' in window))return alert('This browser does not support notifications.')
     if(await Notification.requestPermission()!=='granted')return
@@ -106,7 +129,7 @@ export default function App(){
     </nav>
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
-        <h1 className="text-xl font-bold">Dashboard</h1>
+        <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
           <section className="holo-card rounded-2xl p-5 space-y-3 glow">
             <div className="text-xs text-accent">Overview</div>
@@ -144,9 +167,26 @@ export default function App(){
       {view==='explore'&&<>
         <div className="flex flex-wrap justify-between gap-4 items-end">
           <div><span className="text-xs bg-accent text-ink rounded-full px-3 py-0.5 font-bold">02. Airdrops</span><h1 className="text-4xl md:text-6xl mt-3 holo-text">Explore the ecosystem</h1></div>
-          <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Submit your details to the community moderators.</span><button onClick={()=>setSub(true)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Submit Project</button></div>
+          <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Add it to your own tracker (saved in this browser only).</span><button onClick={()=>setSub(!sub)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Add Project</button></div>
         </div>
-        {sub&&<p className="text-sm text-amber-300">Project submissions are not open yet.</p>}
+        {sub&&<form className="rounded-2xl border border-line bg-panel p-4 grid sm:grid-cols-2 gap-2 text-sm" onSubmit={e=>{e.preventDefault()
+          const f=e.target.elements,v=n=>f[n].value.trim()
+          const id=Math.max(100,...custom.map(c=>c.id))+1,t=iso(new Date())
+          setCustom(c=>[...c,{id,n:v('pn'),c:v('pc')||'Other',k:v('pk')||'Other',s:v('ps'),i:v('pi'),deadline:v('pd'),added:t,verified:t,task:v('pt').split(',').map(x=>x.trim()).filter(Boolean).join(', '),reward:v('prw'),w:v('pw'),x:v('px'),r:v('pnote')}])
+          note('Added project: '+v('pn'),'add');e.target.reset();setSub(false)}}>
+          <input name="pn" required placeholder="Project name"/>
+          <input name="pc" placeholder="Chain (e.g. Ethereum)"/>
+          <input name="pk" placeholder="Category (e.g. DeFi)"/>
+          <input name="pd" type="date" required className="[color-scheme:dark]"/>
+          <select name="ps"><option>Active</option><option>Upcoming</option></select>
+          <select name="pi"><option>Unverified</option><option>Potential</option><option>Confirmed</option></select>
+          <input name="pt" placeholder="Task types (comma separated)"/>
+          <select name="prw"><option>Airdrop</option><option>Points</option></select>
+          <input name="pw" placeholder="Official website (https://...)"/>
+          <input name="px" placeholder="X link (https://...)"/>
+          <input name="pnote" className="sm:col-span-2" placeholder="Short note"/>
+          <button className="sm:col-span-2 bg-accent text-ink font-bold rounded-lg py-2">Save project</button>
+        </form>}
         {(()=>{
           const act=live.filter(x=>x.dl>=0),nxt=act[0]
           const hot=[...act.filter(x=>x.ad>-7),...act.filter(x=>x.ad<=-7)].filter(x=>!nxt||x.id!==nxt.id).slice(0,2)
@@ -173,7 +213,7 @@ export default function App(){
         })()}
         <div className="flex flex-wrap gap-2 items-center">
           {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink border-transparent':'border-zinc-500'}`}>{c}</button>)}
-          <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><span className="rounded-full bg-accent text-ink font-bold text-xs px-4 py-1.5">Search</span></div>
+          <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
         </div>
         <div className="flex gap-2 items-center">
           <select value={chain} onChange={e=>setChain(e.target.value)}>{chains.map(c=><option key={c}>{c}</option>)}</select>
@@ -249,7 +289,7 @@ export default function App(){
 
       {view==='watch'&&<>
         <h1 className="text-2xl font-bold">Watchlist</h1>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}><Card p={p}/><div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}</div></div>)}</div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}><Card p={p}/><div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}{w[p.id]?.wallet?' · Wallet: '+w[p.id].wallet:''}</div></div>)}</div>
         {!data.some(p=>w[p.id]?.fav)&&<p className="text-zinc-500">Your watchlist is empty. Star a project in Explore to save it.</p>}
       </>}
     </main>
@@ -269,6 +309,7 @@ export default function App(){
         <textarea className="w-full" rows={3} placeholder="Notes" value={w[p.id]?.note||''} onChange={e=>setWp(p.id,{note:e.target.value})}/>
         <input className="w-full" placeholder="Wallet label (e.g. Main wallet)" value={w[p.id]?.wallet||''} onChange={e=>setWp(p.id,{wallet:e.target.value})}/>
         <p className="text-xs text-amber-300">Label only. Never enter a seed phrase, private key, or full address.</p>
+        {p.id>=100&&<button onClick={()=>{if(confirm('Delete this project?')){setCustom(c=>c.filter(x=>x.id!==p.id));setOpen(null)}}} className="text-xs text-red-400 border border-red-400/40 rounded-lg px-3 py-1.5">Delete project</button>}
       </aside>
     </div>}
   </div>)
