@@ -124,7 +124,7 @@ export default function App(){
 
   const first=new Date(t0().getFullYear(),t0().getMonth()+mo,1),pad=first.getDay(),dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate()
   return(
-  <div className="min-h-screen md:flex">
+  <div className="min-h-screen md:flex overflow-x-clip">
     
     {/* (mobile only) */}
 <header className="md:hidden sticky top-0 z-[5] flex items-center gap-3 border-b border-line bg-ink px-4 py-3">
@@ -233,7 +233,7 @@ export default function App(){
           {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink border-transparent':'border-zinc-500'}`}>{c}</button>)}
           <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           <select value={chain} onChange={e=>setChain(e.target.value)}>{chains.map(c=><option key={c}>{c}</option>)}</select>
           <select value={tk} onChange={e=>setTk(e.target.value)}><option value="">Task Type</option>{taskTypes.map(c=><option key={c}>{c}</option>)}</select>
           <select value={st} onChange={e=>setSt(e.target.value)}>{['All','Active','Upcoming','Ended'].map(c=><option key={c} value={c}>{c==='All'?'Status':c}</option>)}</select>
@@ -241,9 +241,29 @@ export default function App(){
           <button aria-label="Grid" onClick={()=>setMode('grid')} className={mode==='grid'?'text-accent':'text-zinc-500'}><LayoutGrid size={20}/></button>
           <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500'}><List size={20}/></button>
         </div>
+
+        <div className="md:hidden space-y-3">
+  {list.map(d=>(
+    <div key={d.id} className="rounded-2xl border border-line bg-panel overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-line">
+        <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] uppercase tracking-wider text-zinc-300">{d.k}</span>
+        <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] uppercase tracking-wider text-zinc-300">{d.s}</span>
+      </div>
+      <div className="p-4 space-y-2">
+        <h3 className="text-lg font-bold">{d.n}</h3>
+        <p className="text-sm text-zinc-400">{d.c} · {d.reward} · {dlText(d)}</p>
+        <div className="flex items-center gap-3"><div className="flex-1"><Bar v={pct(d.id)}/></div><span className="text-xs text-zinc-500">{pct(d.id)}%</span></div>
+        <div className="flex items-center justify-between pt-1">
+          <button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={20} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button>
+          <button onClick={()=>setOpen(d.id)} className="rounded-lg border border-line px-4 py-2 text-sm font-medium">View details</button>
+        </div>
+      </div>
+    </div>))}
+       </div>
+
         {mode==='grid'
-  ?<div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Fragment key={d.id}>{Card({p:d})}</Fragment>)}</div>
-  :<div className="rounded-2xl border border-line bg-panel overflow-x-auto">
+  ?<div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Fragment key={d.id}>{Card({p:d})}</Fragment>)}</div>
+  :<div className="hidden md:block rounded-2xl border border-line bg-panel overflow-x-auto">
     <table className="w-full min-w-[900px] text-sm">
       <thead><tr className="text-left text-xs text-zinc-500 border-b border-line">
         <th className="p-3 font-medium">Name</th><th className="p-3 font-medium">Chain · Category</th><th className="p-3 font-medium">Task Type</th><th className="p-3 font-medium">Status</th><th className="p-3 font-medium">Reward</th><th className="p-3 font-medium">Deadline</th><th className="p-3 font-medium">Progress</th><th className="p-3 w-10"></th>
