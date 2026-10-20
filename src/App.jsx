@@ -1,6 +1,6 @@
 import {useState,useEffect} from 'react'
 import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell} from 'lucide-react'
-import data from './data.json'
+import raw from './data.json'
 import mascot from './mascot.webp'
 
 const DAY=864e5,DEF=['Connect wallet','Complete testnet transactions','Bridge assets','Complete quests','Submit feedback']
@@ -10,6 +10,8 @@ const fmt=d=>d.toLocaleDateString('en-US',{day:'numeric',month:'short'})
 const same=(a,b)=>a.toDateString()===b.toDateString()
 const tone={Confirmed:'text-accent border-accent/40',Potential:'text-amber-300 border-amber-300/40',Unverified:'text-red-400 border-red-400/40'}
 const PR={High:0,Medium:1,Low:2}
+const days=d=>Math.round((new Date(d+'T00:00:00')-t0())/DAY)
+const data=raw.map(p=>{const dl=days(p.deadline);return{...p,dl,ad:days(p.added),v:-days(p.verified),s:dl<-7?'Ended':p.s}})
 const ST=[['Active','bg-accent'],['Upcoming','bg-amber-400'],['Ended','bg-zinc-500']]
 const PC={High:'text-red-400',Medium:'text-amber-400',Low:'text-zinc-400'}
 const NAV=[['dash','Dashboard',LayoutDashboard],['explore','Explore',Compass],['tasks','Tasks',ListChecks],['cal','Calendar',CalendarDays],['watch','Watchlist',Star]]
@@ -144,6 +146,30 @@ export default function App(){
           <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Submit your details to the community moderators.</span><button onClick={()=>setSub(true)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Submit Project</button></div>
         </div>
         {sub&&<p className="text-sm text-amber-300">Project submissions are not open yet.</p>}
+        {(()=>{
+          const act=live.filter(x=>x.dl>=0),nxt=act[0]
+          const hot=[...act.filter(x=>x.ad>-7),...act.filter(x=>x.ad<=-7)].filter(x=>!nxt||x.id!==nxt.id).slice(0,2)
+          const stat=[['Upcoming',data.filter(x=>x.s==='Upcoming').length,'border-accent'],['Confirmed',data.filter(x=>x.i==='Confirmed'&&x.s!=='Ended').length,'border-accent'],['Due in 3 days',act.filter(x=>x.dl<=3).length,'border-amber-400'],['Overdue',live.filter(x=>x.dl<0).length,'border-red-400']]
+          return(
+          <div className="grid md:grid-cols-3 gap-3 stagger">
+            <section className="rounded-2xl border border-line bg-panel p-4">
+              <h2 className="text-sm font-bold mb-3">Current Activity Overview</h2>
+              <div className="grid grid-cols-2 gap-3">{stat.map(([l,n,c])=><div key={l} className={`border-l-2 ${c} pl-3`}><div className="text-2xl font-bold">{n}</div><div className="text-xs text-zinc-400">{l}</div></div>)}</div>
+            </section>
+            <section className="rounded-2xl border border-line bg-panel p-4 flex flex-col">
+              <h2 className="text-sm font-bold mb-3">Next Reward</h2>
+              {nxt?<>
+                <div className="flex-1"><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-bold">{nxt.n}</div><div className="text-sm text-zinc-300">{dlText(nxt)} · {fmt(at(nxt.dl))}</div></div>
+                <button onClick={()=>setOpen(nxt.id)} className="mt-3 self-start text-xs rounded-full border border-accent text-accent px-3 py-1">Open details</button>
+              </>:<p className="text-sm text-zinc-500">No upcoming deadlines.</p>}
+            </section>
+            <section className="rounded-2xl border border-line bg-panel p-4">
+              <h2 className="text-sm font-bold mb-3">Hot events</h2>
+              <div className="space-y-2">{hot.map(h=><button key={h.id} onClick={()=>setOpen(h.id)} className="w-full text-left rounded-xl border border-line p-2.5 flex items-center gap-3 hover:bg-white/5"><span className="w-8 h-8 rounded-full border border-zinc-600 grid place-items-center font-bold text-accent shrink-0">{h.n[0]}</span><span className="min-w-0"><span className="block text-sm font-bold truncate">{h.n}</span><span className="block text-xs text-zinc-400 truncate">{h.c} · {dlText(h)}</span></span></button>)}
+                {!hot.length&&<p className="text-sm text-zinc-500">Nothing hot right now.</p>}</div>
+            </section>
+          </div>)
+        })()}
         <div className="flex flex-wrap gap-2 items-center">
           {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink border-transparent':'border-zinc-500'}`}>{c}</button>)}
           <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><span className="rounded-full bg-accent text-ink font-bold text-xs px-4 py-1.5">Search</span></div>
