@@ -49,8 +49,8 @@ function Mascot(){
 }
 export default function App(){
   const [view,setView]=useState('dash'),[open,setOpen]=useState(null),[mode,setMode]=useState('list'),[mo,setMo]=useState(0)
-  const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[col,setCol]=useState('todo'),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
-  const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl')
+  const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[col,setCol]=useState('todo'),[pj,setPj]=useState(''),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
+  const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl'),[tk,setTk]=useState(''),[st,setSt]=useState('All')
   const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[])
   const getT=id=>tasks[id]||DEF.map(t=>({t,s:'todo'}))
   const pct=id=>{const a=getT(id);return Math.round(a.filter(x=>x.s==='done').length/a.length*100)}
@@ -60,9 +60,10 @@ export default function App(){
   const addT=(p,t)=>{if(!t.trim())return;setT(p.id,a=>[...a,{t:t.trim(),s:'todo'}]);note(`New task in ${p.n}: ${t.trim()}`,'add')}
   const setWp=(id,patch)=>setW(s=>({...s,[id]:{...(s[id]||{}),...patch}}))
   const prio=p=>w[p.id]?.prio||'Medium'
+  const taskTypes=[...new Set(data.flatMap(p=>(p.task||'').split(', ').filter(Boolean)))]
   const chains=['All',...new Set(data.map(p=>p.c))],cats=['All',...new Set(data.map(p=>p.k))]
 
-  const list=data.filter(p=>p.n.toLowerCase().includes(q.toLowerCase())&&(chain==='All'||p.c===chain)&&(cat==='All'||(cat==='New'?p.ad>-7:cat==='Popular'?p.i==='Confirmed':p.k===cat)))
+  const list=data.filter(p=>p.n.toLowerCase().includes(q.toLowerCase())&&(chain==='All'||p.c===chain)&&(cat==='All'||(cat==='New'?p.ad>-7:cat==='Popular'?p.i==='Confirmed':p.k===cat))&&(!tk||(p.task||'').split(', ').includes(tk))&&(st==='All'||p.s===st))
     .sort((a,b)=>sort==='dl'?a.dl-b.dl:sort==='ad'?b.ad-a.ad:PR[prio(a)]-PR[prio(b)])
   const live=data.filter(p=>p.s!=='Ended').sort((a,b)=>a.dl-b.dl)
   const allT=data.flatMap(p=>getT(p.id)),done=allT.filter(x=>x.s==='done').length,total=Math.round(done/allT.length*100)
@@ -70,7 +71,7 @@ export default function App(){
   const board=data.flatMap(d=>getT(d.id).map((x,i)=>({...x,p:d,i}))).map((x,n)=>({...x,id:'T-'+String(n+1).padStart(3,'0')}))
   const cnt=k=>board.filter(x=>x.p.s!=='Ended'&&(k==='all'||x.s===k)).length
   const tags=[...new Set(data.flatMap(d=>[d.c,d.k]))]
-  const vis=board.filter(x=>(vw==='archived'?x.p.s==='Ended':x.p.s!=='Ended'&&(vw==='all'||x.s===vw))&&(!pf||prio(x.p)===pf)&&(!tg||x.p.c===tg||x.p.k===tg)&&x.t.toLowerCase().includes(tq.toLowerCase()))
+  const vis=board.filter(x=>(vw==='archived'?x.p.s==='Ended':x.p.s!=='Ended'&&(vw==='all'||x.s===vw))&&(!pf||prio(x.p)===pf)&&(!pj||x.p.id===+pj)&&(!tg||x.p.c===tg||x.p.k===tg)&&x.t.toLowerCase().includes(tq.toLowerCase()))
   const pts=live.map((d,i)=>[40+i*(520/Math.max(live.length-1,1)),170-pct(d.id)*1.4])
   const path=pts.map((a,i)=>(i?'L':'M')+a[0]+' '+a[1]).join(' ')
   const p=data.find(x=>x.id===open)
@@ -98,12 +99,12 @@ export default function App(){
   const first=new Date(t0().getFullYear(),t0().getMonth()+mo,1),pad=first.getDay(),dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate()
   return(
   <div className="min-h-screen md:flex">
-    <Mascot/>
+    
     <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto noscroll">
       <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">Airdrop Tracker</div>
       {NAV.map(([k,l,I])=><button key={k} onClick={()=>setView(k)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap ${view===k?'bg-accent text-ink font-bold':'hover:bg-panel'}`}><I size={16}/>{l}</button>)}
     </nav>
-    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 pb-28 md:pb-28 space-y-4 max-w-6xl view-in">
+    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
         <h1 className="text-xl font-bold">Dashboard</h1>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
@@ -176,6 +177,8 @@ export default function App(){
         </div>
         <div className="flex gap-2 items-center">
           <select value={chain} onChange={e=>setChain(e.target.value)}>{chains.map(c=><option key={c}>{c}</option>)}</select>
+          <select value={tk} onChange={e=>setTk(e.target.value)}><option value="">Task Type</option>{taskTypes.map(c=><option key={c}>{c}</option>)}</select>
+          <select value={st} onChange={e=>setSt(e.target.value)}>{['All','Active','Upcoming','Ended'].map(c=><option key={c} value={c}>{c==='All'?'Status':c}</option>)}</select>
           <select value={sort} onChange={e=>setSort(e.target.value)}><option value="dl">Sort: Deadline</option><option value="ad">Sort: Date added</option><option value="pr">Sort: Priority</option></select>
           <button aria-label="Grid" onClick={()=>setMode('grid')} className={mode==='grid'?'text-accent':'text-zinc-500'}><LayoutGrid size={20}/></button>
           <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500'}><List size={20}/></button>
@@ -183,15 +186,17 @@ export default function App(){
         {mode==='grid'
   ?<div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Card key={d.id} p={d}/>)}</div>
   :<div className="rounded-2xl border border-line bg-panel overflow-x-auto">
-    <table className="w-full min-w-[720px] text-sm">
+    <table className="w-full min-w-[900px] text-sm">
       <thead><tr className="text-left text-xs text-zinc-500 border-b border-line">
-        <th className="p-3 font-medium">Name</th><th className="p-3 font-medium">Chain · Category</th><th className="p-3 font-medium">Status</th><th className="p-3 font-medium">Deadline</th><th className="p-3 font-medium">Progress</th><th className="p-3 w-10"></th>
+        <th className="p-3 font-medium">Name</th><th className="p-3 font-medium">Chain · Category</th><th className="p-3 font-medium">Task Type</th><th className="p-3 font-medium">Status</th><th className="p-3 font-medium">Reward</th><th className="p-3 font-medium">Deadline</th><th className="p-3 font-medium">Progress</th><th className="p-3 w-10"></th>
       </tr></thead>
       <tbody>{list.map(d=>(
         <tr key={d.id} onClick={()=>setOpen(d.id)} className="border-b border-line last:border-0 hover:bg-white/5 cursor-pointer">
           <td className="p-3"><div className="flex items-center gap-3"><span className="w-8 h-8 rounded-full border border-zinc-600 grid place-items-center font-bold text-accent shrink-0">{d.n[0]}</span><span className="font-bold">{d.n}</span></div></td>
           <td className="p-3 whitespace-nowrap"><span className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{d.c}</span> <span className="rounded bg-accent/15 text-accent px-2 py-0.5 text-xs">{d.k}</span></td>
+          <td className="p-3"><div className="flex gap-1 flex-wrap">{(d.task||'').split(', ').filter(Boolean).map(t=><span key={t} className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{t}</span>)}</div></td>
           <td className="p-3"><Badge i={d.i}/><div className="text-xs text-zinc-500 mt-1">{d.s}</div></td>
+          <td className="p-3 whitespace-nowrap">{d.reward}</td>
           <td className="p-3 whitespace-nowrap">{dlText(d)}<div className="text-xs text-zinc-500">{d.s!=='Ended'&&fmt(at(d.dl))}</div></td>
           <td className="p-3 w-32"><Bar v={pct(d.id)}/><div className="text-xs text-zinc-500 mt-1">{pct(d.id)}%</div></td>
           <td className="p-3" onClick={e=>e.stopPropagation()}><button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={18} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button></td>
@@ -205,6 +210,7 @@ export default function App(){
         <aside className="md:w-44 shrink-0 text-sm space-y-1 md:space-y-4 mb-3 min-w-0">
           <div className="flex md:block gap-1 overflow-x-auto items-center noscroll"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Views</div>{[['all','All tasks'],['todo','todo'],['doing','doing'],['done','done'],['archived','archived']].map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`inline-flex md:flex gap-2 justify-between md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${vw===k?'bg-white/10 text-white':'text-zinc-400'}`}><span>{l}</span><span>{k==='archived'?board.filter(x=>x.p.s==='Ended').length:cnt(k)}</span></button>)}</div>
           <div className="flex md:block gap-1 overflow-x-auto items-center noscroll"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Priority</div>{Object.keys(PC).map(k=><button key={k} onClick={()=>setPf(pf===k?'':k)} className={`inline-flex md:flex gap-2 items-center md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${pf===k?'bg-panel text-white':'text-zinc-400'}`}><span className={PC[k]}>●</span>{k.toLowerCase()}</button>)}</div>
+          <div className="flex md:block gap-2 items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Project</div><select value={pj} onChange={e=>setPj(e.target.value)} className="flex-1 md:w-full min-w-0"><option value="">All projects</option>{data.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select></div>
           <div className="flex md:block gap-2 items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Tags</div><select value={tg} onChange={e=>setTg(e.target.value)} className="flex-1 md:w-full min-w-0"><option value="">All tags</option>{tags.map(k=><option key={k} value={k}>{k}</option>)}</select></div>
         </aside>
         <div className="flex-1 space-y-3 min-w-0">
