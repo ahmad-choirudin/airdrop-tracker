@@ -82,7 +82,7 @@ export default function App(){
   const exportData=()=>{
     const a=document.createElement('a')
     a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'airdrop-tracker',v:1,tasks,watch:w,log,custom},null,2)],{type:'application/json'}))
-    a.download='airdrop-tracker-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+    a.download='cubbie-airdrop-tracker-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
   }
   const importData=e=>{
     const f=e.target.files[0];e.target.value='';if(!f)return
@@ -103,7 +103,7 @@ export default function App(){
     if(!('Notification' in window))return alert('This browser does not support notifications.')
     if(await Notification.requestPermission()!=='granted')return
     const soon=live.filter(x=>x.dl>=0&&x.dl<=1)
-    new Notification('Airdrop Tracker',{body:soon.length?soon.map(x=>`${x.n}: ${dlText(x)}`).join('\n'):'No deadlines within 1 day.'})
+    new Notification('CUBBIE Airdrop Tracker',{body:soon.length?soon.map(x=>`${x.n}: ${dlText(x)}`).join('\n'):'No deadlines within 1 day.'})
   }
   const Card=({p})=>(
     <div className="rounded-2xl border border-zinc-600 bg-black p-5 flex flex-col gap-3 min-h-44 card-lift">
@@ -124,7 +124,7 @@ export default function App(){
   <div className="min-h-screen md:flex">
     
     <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto noscroll">
-      <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">Airdrop Tracker</div>
+      <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">CUBBIE<span className="block text-sm text-zinc-400 font-sans tracking-normal">Airdrop Tracker</span></div>
       {NAV.map(([k,l,I])=><button key={k} onClick={()=>setView(k)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap ${view===k?'bg-accent text-ink font-bold':'hover:bg-panel'}`}><I size={16}/>{l}</button>)}
     </nav>
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
