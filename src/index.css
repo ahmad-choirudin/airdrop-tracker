@@ -67,3 +67,35 @@ body::before{-webkit-mask-image:none!important;mask-image:none!important;opacity
 .bg-panel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background-color:#0a110c!important}
 .glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards!important;box-shadow:0 0 24px #39ff8833}
 .card-lift{transition:transform .2s,border-color .2s!important}
+
+/* light theme */
+html{color-scheme:dark}
+html.light{color-scheme:light}
+html.light body{background:#f3f8f5!important;color:#14201a}
+html.light body::before{background-image:linear-gradient(#0a8f4a14 1px,transparent 1px),linear-gradient(90deg,#0a8f4a14 1px,transparent 1px)}
+html.light .bg-ink{background-color:#f3f8f5}
+html.light .bg-panel,html.light .bg-black,html.light .card-lift,html.light .holo-card{background-color:#fff!important}
+html.light .holo-card{border-color:#0a8f4a55}
+html.light .border-line,html.light .border-white\/15{border-color:#d3e3d8}
+html.light .border-zinc-500,html.light .border-zinc-600,html.light .border-zinc-300{border-color:#b9cfc0}
+html.light .border-accent{border-color:#0a8f4a}
+html.light .bg-line{background-color:#d3e3d8}
+html.light .text-white,html.light .text-zinc-100,html.light .\!text-white{color:#0f1a13!important}
+html.light .text-zinc-200,html.light .text-zinc-300{color:#2b3a31}
+html.light .text-zinc-400{color:#4b5d52}
+html.light .text-zinc-500{color:#667a6d}
+html.light .text-accent,html.light .holo-text{color:#0a8f4a}
+html.light .fill-accent{fill:#0a8f4a}
+html.light .bg-white\/10,html.light .bg-black\/40{background-color:#0a8f4a14}
+html.light .hover\:bg-white\/5:hover{background-color:#0a8f4a0d}
+html.light .hover\:bg-panel:hover{background-color:#e3f0e8}
+html.light .text-amber-300,html.light .text-amber-400{color:#b45309}
+html.light .text-red-300,html.light .text-red-400{color:#dc2626}
+html.light input,html.light select,html.light textarea{background:#fff;border-color:#c5d8cb;color:#14201a}
+html.light input:focus,html.light select:focus,html.light textarea:focus{border-color:#0a8f4a}
+html.light .card-lift:hover{border-color:#0a8f4a;box-shadow:0 8px 24px -10px #0a8f4a55}
+html.light .glow{box-shadow:0 4px 24px #0a8f4a22}
+html.light svg line{stroke:#d3e3d8}
+html.light svg circle[fill="#fff"]{fill:#0a8f4a}
+html.light svg path.draw{stroke:#0a8f4a}
+html.light .\[color-scheme\:dark\]{color-scheme:light}

@@ -1,5 +1,5 @@
 import {useState,useEffect,Fragment} from 'react'
-import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell} from 'lucide-react'
+import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell,Sun,Moon} from 'lucide-react'
 import raw from './data.json'
 import mascot from './mascot.webp'
 
@@ -55,6 +55,8 @@ export default function App(){
   const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl'),[tk,setTk]=useState(''),[st,setSt]=useState('All')
   const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[]),[custom,setCustom]=useLS('at-custom',[])
   const data=[...raw,...custom].map(norm)
+  const [theme,setTheme]=useLS('at-theme','dark')
+  useEffect(()=>{document.documentElement.classList.toggle('light',theme==='light')},[theme])
   const getT=id=>tasks[id]||DEF.map(t=>({t,s:'todo'}))
   const pct=id=>{const a=getT(id);return Math.round(a.filter(x=>x.s==='done').length/a.length*100)}
   const note=(m,ty)=>setLog(l=>[{m,ty,t:Date.now()},...l].slice(0,30))
@@ -126,6 +128,7 @@ export default function App(){
     <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto noscroll">
       <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">CUBBIE<span className="block text-sm text-zinc-400 font-sans tracking-normal">Airdrop Tracker</span></div>
       {NAV.map(([k,l,I])=><button key={k} onClick={()=>setView(k)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap ${view===k?'bg-accent text-ink font-bold':'hover:bg-panel'}`}><I size={16}/>{l}</button>)}
+      <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="md:mt-auto flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
     </nav>
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
