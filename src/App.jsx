@@ -13,11 +13,11 @@ const PR={High:0,Medium:1,Low:2}
 const days=d=>Math.round((new Date(d+'T00:00:00')-t0())/DAY)
 const safe=u=>/^https?:\/\//i.test(u||'')?u:'#'
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')
-const norm=p=>{const dl=days(p.deadline);return{...p,w:safe(p.w),x:safe(p.x),dl,ad:days(p.ad?p.added:p.added),v:-days(p.verified),s:dl<-7?'Ended':p.s}}
+const norm=p=>{const dl=/^\d{4}-\d{2}-\d{2}$/.test(p.deadline||'')?days(p.deadline):9999;return{...p,w:safe(p.w),x:safe(p.x),dl,ad:days(p.ad?p.added:p.added),v:-days(p.verified),s:dl<-7?'Ended':p.s}}
 const ST=[['Active','bg-accent'],['Upcoming','bg-amber-400'],['Ended','bg-zinc-500']]
 const PC={High:'text-red-400',Medium:'text-amber-400',Low:'text-zinc-400'}
 const NAV=[['dash','Dashboard',LayoutDashboard],['explore','Explore',Compass],['tasks','Tasks',ListChecks],['cal','Calendar',CalendarDays],['watch','Watchlist',Star]]
-const dlText=p=>p.s==='Ended'?'Ended':p.dl<0?`Overdue ${-p.dl}d`:p.dl===0?'Today':`${p.dl} days left`
+const dlText=p=>p.s==='Ended'?'Ended':p.dl>=9999?'TBA':p.dl<0?`Overdue ${-p.dl}d`:p.dl===0?'Today':`${p.dl} days left`
 
 function useLS(k,init){
   const [v,s]=useState(()=>{try{return JSON.parse(localStorage.getItem(k))??init}catch{return init}})
@@ -96,7 +96,7 @@ export default function App(){
       if(obj(d.tasks)&&Object.values(d.tasks).every(a=>Array.isArray(a)&&a.every(x=>x&&typeof x.t==='string'&&['todo','doing','done'].includes(x.s))))setTasks(d.tasks)
       if(obj(d.watch))setW(d.watch)
       if(Array.isArray(d.log))setLog(d.log.slice(0,30))
-      if(Array.isArray(d.custom))setCustom(d.custom.filter(c=>c&&typeof c.id==='number'&&typeof c.n==='string'&&D.test(c.deadline)&&D.test(c.added)&&D.test(c.verified)))
+      if(Array.isArray(d.custom))setCustom(d.custom.filter(c=>c&&typeof c.id==='number'&&typeof c.n==='string'&&(!c.deadline||D.test(c.deadline))&&D.test(c.added)&&D.test(c.verified)))
       alert('Data imported.')
     }catch{alert('Invalid backup file.')}}
     rd.readAsText(f)
@@ -111,7 +111,7 @@ export default function App(){
     <div className="rounded-2xl border border-zinc-600 bg-black p-5 flex flex-col gap-3 min-h-44 card-lift">
       <div className="flex justify-between items-start"><button onClick={()=>setOpen(p.id)} className="flex items-center gap-3 text-left"><span className="w-10 h-10 rounded-full border border-zinc-500 grid place-items-center font-bold text-accent">{p.n[0]}</span><span className="font-bold">{p.n}</span></button>
         <button aria-label="Favorite" onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})}><Star size={18} className={w[p.id]?.fav?'fill-accent text-accent star-on':'text-zinc-500'}/></button></div>
-      <p className="text-sm text-zinc-300 flex-1">{p.r}</p>
+      <p className="text-sm text-zinc-300 flex-1" style={{display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.r}</p>
       <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-400">{p.c} · {p.k} · {dlText(p)}</span></div>
       <div className="flex justify-between items-center"><div className="w-24"><Bar v={pct(p.id)}/></div><div className="flex gap-3 text-zinc-400 text-sm"><a href={p.x} target="_blank" rel="noreferrer" aria-label="X">𝕏</a><a href={p.w} target="_blank" rel="noreferrer" aria-label="Website">↗</a></div></div>
     </div>)
@@ -180,7 +180,7 @@ export default function App(){
           <input name="pn" required placeholder="Project name"/>
           <input name="pc" placeholder="Chain (e.g. Ethereum)"/>
           <input name="pk" placeholder="Category (e.g. DeFi)"/>
-          <input name="pd" type="date" required className="[color-scheme:dark]"/>
+          <input name="pd" type="date" className="[color-scheme:dark]"/>
           <select name="ps"><option>Active</option><option>Upcoming</option></select>
           <select name="pi"><option>Unverified</option><option>Potential</option><option>Confirmed</option></select>
           <input name="pt" placeholder="Task types (comma separated)"/>
@@ -191,7 +191,7 @@ export default function App(){
           <button className="sm:col-span-2 bg-accent text-ink font-bold rounded-lg py-2">Save project</button>
         </form>}
         {(()=>{
-          const act=live.filter(x=>x.dl>=0),nxt=act[0]
+          const act=live.filter(x=>x.dl>=0),nxt=act.find(x=>x.dl<9999)
           const hot=[...act.filter(x=>x.ad>-7),...act.filter(x=>x.ad<=-7)].filter(x=>!nxt||x.id!==nxt.id).slice(0,2)
           const stat=[['Upcoming',data.filter(x=>x.s==='Upcoming').length,'border-accent'],['Confirmed',data.filter(x=>x.i==='Confirmed'&&x.s!=='Ended').length,'border-accent'],['Due in 3 days',act.filter(x=>x.dl<=3).length,'border-amber-400'],['Overdue',live.filter(x=>x.dl<0).length,'border-red-400']]
           return(
@@ -240,7 +240,7 @@ export default function App(){
           <td className="p-3"><div className="flex gap-1 flex-wrap">{(d.task||'').split(', ').filter(Boolean).map(t=><span key={t} className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{t}</span>)}</div></td>
           <td className="p-3"><Badge i={d.i}/><div className="text-xs text-zinc-500 mt-1">{d.s}</div></td>
           <td className="p-3 whitespace-nowrap">{d.reward}</td>
-          <td className="p-3 whitespace-nowrap">{dlText(d)}<div className="text-xs text-zinc-500">{d.s!=='Ended'&&fmt(at(d.dl))}</div></td>
+          <td className="p-3 whitespace-nowrap">{dlText(d)}<div className="text-xs text-zinc-500">{d.s!=='Ended'&&d.dl<9999&&fmt(at(d.dl))}</div></td>
           <td className="p-3 w-32"><Bar v={pct(d.id)}/><div className="text-xs text-zinc-500 mt-1">{pct(d.id)}%</div></td>
           <td className="p-3" onClick={e=>e.stopPropagation()}><button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={18} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button></td>
         </tr>))}</tbody>
@@ -301,7 +301,7 @@ export default function App(){
       <aside className="w-full max-w-md bg-panel border-l border-line p-5 overflow-y-auto space-y-4 slide-in" onClick={e=>e.stopPropagation()}>
         <div className="flex justify-between items-start"><div><h2 className="text-2xl font-bold">{p.n}</h2><div className="text-sm text-zinc-400">{p.c} · {p.k} · {p.s}</div></div><button aria-label="Close" onClick={()=>setOpen(null)}><X/></button></div>
         <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-400">Last verified {fmt(at(-p.v))}</span></div>
-        <p className="text-sm">{p.r}</p>
+        <p className="text-sm whitespace-pre-line">{p.r}</p>
         <p className="text-xs text-zinc-400">There is no guarantee this project will give an airdrop.</p>
         {p.f&&<div className="flex gap-2 text-sm text-red-300 bg-red-400/10 rounded-lg p-3"><ShieldAlert size={18} className="shrink-0"/>{p.f}</div>}
         <div className="flex gap-4 text-sm text-accent"><a href={p.w} target="_blank" rel="noreferrer" className="flex gap-1 items-center">Website <ExternalLink size={12}/></a><a href={p.x} target="_blank" rel="noreferrer" className="flex gap-1 items-center">X account <ExternalLink size={12}/></a></div>
