@@ -58,3 +58,5 @@ h1.text-xl,h1.text-2xl{font-size:2.1rem;line-height:1.1}
 .card-lift{background-color:rgba(10,17,12,.8);border-color:#ffffff1f}
 .card-lift:hover{border-color:#39ff88;box-shadow:0 0 0 1px #39ff8855,0 14px 40px -14px #16d96aaa}
 .mascot img{filter:drop-shadow(0 6px 10px #16d96a88)}
+
+.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}

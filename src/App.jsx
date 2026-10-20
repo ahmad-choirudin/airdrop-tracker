@@ -49,7 +49,7 @@ function Mascot(){
 }
 export default function App(){
   const [view,setView]=useState('dash'),[open,setOpen]=useState(null),[mode,setMode]=useState('list'),[mo,setMo]=useState(0)
-  const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
+  const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[col,setCol]=useState('todo'),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
   const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl')
   const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[])
   const getT=id=>tasks[id]||DEF.map(t=>({t,s:'todo'}))
@@ -99,11 +99,11 @@ export default function App(){
   return(
   <div className="min-h-screen md:flex">
     <Mascot/>
-    <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto">
+    <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto noscroll">
       <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">Airdrop Tracker</div>
       {NAV.map(([k,l,I])=><button key={k} onClick={()=>setView(k)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap ${view===k?'bg-accent text-ink font-bold':'hover:bg-panel'}`}><I size={16}/>{l}</button>)}
     </nav>
-    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
+    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 pb-28 md:pb-28 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
         <h1 className="text-xl font-bold">Dashboard</h1>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
@@ -203,17 +203,18 @@ export default function App(){
 
       {view==='tasks'&&<div className="md:flex gap-4">
         <aside className="md:w-44 shrink-0 text-sm space-y-1 md:space-y-4 mb-3 min-w-0">
-          <div className="flex md:block gap-1 overflow-x-auto items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Views</div>{[['all','All tasks'],['todo','todo'],['doing','doing'],['done','done'],['archived','archived']].map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`inline-flex md:flex gap-2 justify-between md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${vw===k?'bg-white/10 text-white':'text-zinc-400'}`}><span>{l}</span><span>{k==='archived'?board.filter(x=>x.p.s==='Ended').length:cnt(k)}</span></button>)}</div>
-          <div className="flex md:block gap-1 overflow-x-auto items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Priority</div>{Object.keys(PC).map(k=><button key={k} onClick={()=>setPf(pf===k?'':k)} className={`inline-flex md:flex gap-2 items-center md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${pf===k?'bg-panel text-white':'text-zinc-400'}`}><span className={PC[k]}>●</span>{k.toLowerCase()}</button>)}</div>
-          <div className="flex md:block gap-1 overflow-x-auto items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Tags</div>{tags.map(k=><button key={k} onClick={()=>setTg(tg===k?'':k)} className={`inline-block md:block md:w-full text-left px-2 py-0.5 rounded whitespace-nowrap shrink-0 ${tg===k?'bg-panel text-white':'text-zinc-400'}`}># {k}</button>)}</div>
+          <div className="flex md:block gap-1 overflow-x-auto items-center noscroll"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Views</div>{[['all','All tasks'],['todo','todo'],['doing','doing'],['done','done'],['archived','archived']].map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`inline-flex md:flex gap-2 justify-between md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${vw===k?'bg-white/10 text-white':'text-zinc-400'}`}><span>{l}</span><span>{k==='archived'?board.filter(x=>x.p.s==='Ended').length:cnt(k)}</span></button>)}</div>
+          <div className="flex md:block gap-1 overflow-x-auto items-center noscroll"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Priority</div>{Object.keys(PC).map(k=><button key={k} onClick={()=>setPf(pf===k?'':k)} className={`inline-flex md:flex gap-2 items-center md:w-full px-2 py-1 rounded whitespace-nowrap shrink-0 ${pf===k?'bg-panel text-white':'text-zinc-400'}`}><span className={PC[k]}>●</span>{k.toLowerCase()}</button>)}</div>
+          <div className="flex md:block gap-2 items-center"><div className="text-xs text-zinc-500 md:mb-1 shrink-0 w-14 md:w-auto">Tags</div><select value={tg} onChange={e=>setTg(e.target.value)} className="flex-1 md:w-full min-w-0"><option value="">All tags</option>{tags.map(k=><option key={k} value={k}>{k}</option>)}</select></div>
         </aside>
         <div className="flex-1 space-y-3 min-w-0">
           <div className="flex flex-wrap gap-2 items-center justify-between"><h1 className="text-xl font-bold">{vw==='all'?'All tasks':vw} <span className="text-sm text-zinc-500 font-normal">{vis.length} visible · {board.length} total</span></h1>
             <div className="flex gap-2"><input placeholder="Search tasks" value={tq} onChange={e=>setTq(e.target.value)}/><button onClick={()=>setNt(!nt)} className="bg-accent text-ink font-bold rounded-lg px-3 text-sm whitespace-nowrap">+ New task</button></div></div>
           {nt&&<form className="flex gap-2" onSubmit={e=>{e.preventDefault();const d=data.find(x=>x.id===+e.target.pj.value);addT(d,e.target.t.value);e.target.reset();setNt(false)}}><select name="pj">{live.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select><input name="t" placeholder="Task title" className="flex-1 min-w-0"/><button className="bg-accent text-ink rounded-lg px-3 text-sm">Add</button></form>}
-          <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2">{['todo','doing','done'].map(k=>
-            <div key={k} onDragOver={e=>e.preventDefault()} onDrop={e=>{const [pid,i]=e.dataTransfer.getData('t').split(':');move(data.find(x=>x.id===+pid),+i,k)}} className="w-[82vw] sm:w-72 md:flex-1 md:min-w-[240px] shrink-0 snap-start space-y-2 min-h-24 max-h-[70vh] overflow-y-auto pr-1">
-              <div className="text-sm sticky top-0 bg-ink py-1 z-[1]"><span className={`inline-block w-2 h-2 rounded-full mr-2 ${k==='todo'?'bg-zinc-400':k==='doing'?'bg-amber-400':'bg-accent'}`}/>{k} <span className="text-zinc-500">{vis.filter(x=>x.s===k).length}</span></div>
+          <div className="flex md:hidden gap-2">{['todo','doing','done'].map(k=><button key={k} onClick={()=>setCol(k)} className={`flex-1 rounded-lg border py-2 text-sm ${col===k?'bg-accent text-ink font-bold border-transparent':'border-line text-zinc-400'}`}>{k} {vis.filter(x=>x.s===k).length}</button>)}</div>
+          <div className="grid md:grid-cols-3 gap-3 pb-2">{['todo','doing','done'].map(k=>
+            <div key={k} onDragOver={e=>e.preventDefault()} onDrop={e=>{const [pid,i]=e.dataTransfer.getData('t').split(':');move(data.find(x=>x.id===+pid),+i,k)}} className={`min-w-0 space-y-2 min-h-24 md:max-h-[75vh] md:overflow-y-auto md:pr-1 ${k===col?'':'hidden md:block'}`}>
+              <div className="text-sm py-1 hidden md:block sticky top-0 bg-ink z-[1]"><span className={`inline-block w-2 h-2 rounded-full mr-2 ${k==='todo'?'bg-zinc-400':k==='doing'?'bg-amber-400':'bg-accent'}`}/>{k} <span className="text-zinc-500">{vis.filter(x=>x.s===k).length}</span></div>
               {vis.filter(x=>x.s===k).map(x=><div key={x.id} draggable onDragStart={e=>e.dataTransfer.setData('t',x.p.id+':'+x.i)} className="rounded-xl border border-line bg-panel p-2.5 space-y-1.5 cursor-grab pop">
                 <div className="flex justify-between text-xs text-zinc-500"><span>{x.id}</span><span className={PC[prio(x.p)]}>● {prio(x.p)}</span></div>
                 <button onClick={()=>setOpen(x.p.id)} className="text-left text-sm font-medium">{x.t}</button>
