@@ -147,7 +147,7 @@ export default function App(){
 
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
-        <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
+        <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="hidden md:block text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
           <section className="holo-card rounded-2xl p-5 space-y-3 glow">
             <div className="text-xs text-accent">Overview</div>
@@ -290,7 +290,7 @@ export default function App(){
       </div>}
 
       {view==='cal'&&<>
-        <div className="flex items-center justify-between flex-wrap gap-2"><h1 className="text-2xl font-bold">Deadline Calendar</h1>
+        <div className="flex items-center justify-between flex-wrap gap-2"><h1 className="hidden md:block text-2xl font-bold">Deadline Calendar</h1>
           <button onClick={remind} className="flex gap-2 items-center text-sm border border-line rounded-lg px-3 py-2"><Bell size={14}/>Enable reminders</button></div>
         <div className="flex items-center gap-3"><button onClick={()=>setMo(mo-1)}>←</button><b>{first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button onClick={()=>setMo(mo+1)}>→</button></div>
         <div className="grid grid-cols-7 gap-1 text-xs">
@@ -306,7 +306,7 @@ export default function App(){
       </>}
 
       {view==='watch'&&<>
-        <h1 className="text-2xl font-bold">Watchlist</h1>
+        <h1 className="hidden md:block text-2xl font-bold">Watchlist</h1>
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}>{Card({p})}<div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}{w[p.id]?.wallet?' · Wallet: '+w[p.id].wallet:''}</div></div>)}</div>
         {!data.some(p=>w[p.id]?.fav)&&<p className="text-zinc-500">Your watchlist is empty. Star a project in Explore to save it.</p>}
       </>}
