@@ -1,5 +1,5 @@
 import {useState,useEffect,Fragment} from 'react'
-import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell,Sun,Moon} from 'lucide-react'
+import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell,Sun,Moon,Menu} from 'lucide-react'
 import raw from './data.json'
 import mascot from './mascot.webp'
 
@@ -51,6 +51,7 @@ function Mascot(){
 }
 export default function App(){
   const [view,setView]=useState('dash'),[open,setOpen]=useState(null),[mode,setMode]=useState('list'),[mo,setMo]=useState(0)
+  const [menu,setMenu]=useState(false)
   const [tab,setTab]=useState('all'),[vw,setVw]=useState('all'),[col,setCol]=useState('todo'),[pj,setPj]=useState(''),[pf,setPf]=useState(''),[tg,setTg]=useState(''),[tq,setTq]=useState(''),[nt,setNt]=useState(false),[sub,setSub]=useState(false),[hov,setHov]=useState(null)
   const [q,setQ]=useState(''),[chain,setChain]=useState('All'),[cat,setCat]=useState('All'),[sort,setSort]=useState('dl'),[tk,setTk]=useState(''),[st,setSt]=useState('All')
   const [tasks,setTasks]=useLS('at-tasks2',{}),[w,setW]=useLS('at-watch',{}),[log,setLog]=useLS('at-log',[]),[custom,setCustom]=useLS('at-custom',[])
@@ -125,11 +126,25 @@ export default function App(){
   return(
   <div className="min-h-screen md:flex">
     
-    <nav className="md:w-52 md:min-h-screen border-b md:border-b-0 md:border-r border-line p-3 flex md:flex-col gap-1 overflow-x-auto noscroll">
-      <div className="serif holo-text px-3 py-2 hidden md:block text-2xl">CUBBIE<span className="block text-sm text-zinc-400 font-sans tracking-normal">Airdrop Tracker</span></div>
-      {NAV.map(([k,l,I])=><button key={k} onClick={()=>setView(k)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap ${view===k?'bg-accent text-ink font-bold':'hover:bg-panel'}`}><I size={16}/>{l}</button>)}
-      <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="md:mt-auto flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
-    </nav>
+    {/* (mobile only) */}
+<header className="md:hidden sticky top-0 z-[5] flex items-center gap-3 border-b border-line bg-ink px-4 py-3">
+  <button aria-label="Menu" onClick={()=>setMenu(true)} className="grid h-11 w-11 place-items-center rounded-xl border border-line"><Menu size={22}/></button>
+  <h2 className="text-lg font-semibold">{NAV.find(n=>n[0]===view)[1]}</h2>
+</header>
+
+{/* Overlay */}
+<div onClick={()=>setMenu(false)} className={`md:hidden fixed inset-0 z-40 bg-black/60 transition-opacity ${menu?'opacity-100':'pointer-events-none opacity-0'}`}/>
+
+{/* Drawer on mobile */}
+<nav className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-52 md:max-w-none md:min-h-screen md:translate-x-0 md:bg-transparent`}>
+  <div className="flex items-start justify-between px-3 py-2">
+    <div className="serif holo-text text-2xl">CUBBIE<span className="block text-sm text-zinc-400 font-sans tracking-normal">Airdrop Tracker</span></div>
+    <button aria-label="Close menu" onClick={()=>setMenu(false)} className="md:hidden text-zinc-400"><X size={20}/></button>
+  </div>
+  {NAV.map(([k,l,I])=><button key={k} onClick={()=>{setView(k);setMenu(false)}} className={`flex items-center gap-3 px-4 py-3 md:px-3 md:py-2 rounded-xl md:rounded-lg text-base md:text-sm whitespace-nowrap border ${view===k?'bg-accent/10 border-accent/40 text-accent font-bold md:bg-accent md:border-transparent md:text-ink':'border-transparent hover:bg-panel'}`}><I size={20}/>{l}</button>)}
+  <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="mt-auto flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
+</nav>
+
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
       {view==='dash'&&<>
         <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
