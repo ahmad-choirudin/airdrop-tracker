@@ -60,3 +60,10 @@ h1.text-xl,h1.text-2xl{font-size:2.1rem;line-height:1.1}
 .mascot img{filter:drop-shadow(0 6px 10px #16d96a88)}
 
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+
+/* perf */
+body{background-attachment:scroll!important}
+body::before{-webkit-mask-image:none!important;mask-image:none!important;opacity:.5}
+.bg-panel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background-color:#0a110c!important}
+.glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards!important;box-shadow:0 0 24px #39ff8833}
+.card-lift{transition:transform .2s,border-color .2s!important}

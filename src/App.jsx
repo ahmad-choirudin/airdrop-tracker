@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react'
+import {useState,useEffect,Fragment} from 'react'
 import {LayoutDashboard,Compass,ListChecks,CalendarDays,Star,Search,LayoutGrid,List,X,Plus,ShieldAlert,ExternalLink,Bell} from 'lucide-react'
 import raw from './data.json'
 import mascot from './mascot.webp'
@@ -224,7 +224,7 @@ export default function App(){
           <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500'}><List size={20}/></button>
         </div>
         {mode==='grid'
-  ?<div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Card key={d.id} p={d}/>)}</div>
+  ?<div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Fragment key={d.id}>{Card({p:d})}</Fragment>)}</div>
   :<div className="rounded-2xl border border-line bg-panel overflow-x-auto">
     <table className="w-full min-w-[900px] text-sm">
       <thead><tr className="text-left text-xs text-zinc-500 border-b border-line">
@@ -289,7 +289,7 @@ export default function App(){
 
       {view==='watch'&&<>
         <h1 className="text-2xl font-bold">Watchlist</h1>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}><Card p={p}/><div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}{w[p.id]?.wallet?' · Wallet: '+w[p.id].wallet:''}</div></div>)}</div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}>{Card({p})}<div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}{w[p.id]?.wallet?' · Wallet: '+w[p.id].wallet:''}</div></div>)}</div>
         {!data.some(p=>w[p.id]?.fav)&&<p className="text-zinc-500">Your watchlist is empty. Star a project in Explore to save it.</p>}
       </>}
     </main>
