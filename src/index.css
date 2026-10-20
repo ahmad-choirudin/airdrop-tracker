@@ -9,7 +9,7 @@ button:focus-visible{@apply outline outline-2 outline-accent}
 @keyframes pop{from{opacity:0;transform:scale(.85)}}
 @keyframes grow{from{transform:scaleX(0)}}
 @keyframes draw{to{stroke-dashoffset:0}}
-@keyframes glow{50%{box-shadow:0 0 28px #60a5fa44}}
+@keyframes glow{50%{box-shadow:0 0 28px #39ff8844}}
 .stagger>*{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards}
 .stagger>:nth-child(1){animation-delay:calc(var(--b,0s) + 0.00s)}
 .stagger>:nth-child(2){animation-delay:calc(var(--b,0s) + 0.07s)}
@@ -30,7 +30,7 @@ button:focus-visible{@apply outline outline-2 outline-accent}
 .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s .3s ease-out forwards}
 .dot{transition:r .2s}
 .card-lift{transition:transform .25s,border-color .25s,box-shadow .25s}
-.card-lift:hover{transform:translateY(-4px);border-color:#60a5fa;box-shadow:0 10px 30px -12px #60a5fa66}
+.card-lift:hover{transform:translateY(-4px);border-color:#39ff88;box-shadow:0 10px 30px -12px #39ff8866}
 button{transition:background-color .2s,color .2s,transform .15s}
 button:active{transform:scale(.96)}
 [draggable=true]:active{opacity:.6}
@@ -44,17 +44,17 @@ button:active{transform:scale(.96)}
 @keyframes hop{0%,100%{transform:translateY(0) scale(1.1,.88)}50%{transform:translateY(-24px) scale(.94,1.08)}}
 @keyframes hopbig{0%,100%{transform:translateY(0)}50%{transform:translateY(-80px) rotate(360deg)}}
 
-body{background:#05070d radial-gradient(60rem 40rem at 85% -10%,#2563eb2e,transparent 60%),radial-gradient(50rem 35rem at -10% 110%,#1d4ed81f,transparent 60%);background-attachment:fixed;font-family:Inter,system-ui,sans-serif}
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#ffffff09 1px,transparent 1px),linear-gradient(90deg,#ffffff09 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%)}
-input,select,textarea{background:#080c14;border-color:#1e2a3d}
-input:focus,select:focus,textarea:focus{border-color:#60a5fa}
-h1,.serif,.text-5xl,.text-3xl{font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;letter-spacing:-.02em}
+body{background:#050805 radial-gradient(60rem 40rem at 85% -10%,#00ff6a22,transparent 60%),radial-gradient(50rem 35rem at -10% 110%,#00c85a1a,transparent 60%);background-attachment:fixed;font-family:Inter,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#39ff8814 1px,transparent 1px),linear-gradient(90deg,#39ff8814 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%)}
+input,select,textarea{background:#060a07;border-color:#1a2e1f}
+input:focus,select:focus,textarea:focus{border-color:#39ff88}
+h1,.serif,.text-5xl,.text-3xl{font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;letter-spacing:-.02em}
 h1.text-xl,h1.text-2xl{font-size:2.1rem;line-height:1.1}
-.holo-text{color:#93c5fd}
-.bg-panel{background-color:rgba(11,16,26,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.holo-card{border:1px solid #60a5fa55;background:#0b101a}
-@keyframes holoGlow{50%{box-shadow:0 0 30px #3b82f655}}
+.holo-text{color:#86ffb8}
+.bg-panel{background-color:rgba(10,17,12,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.holo-card{border:1px solid #39ff8855;background:#0a110c}
+@keyframes holoGlow{50%{box-shadow:0 0 30px #16d96a55}}
 .glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards,holoGlow 4s ease-in-out infinite}
-.card-lift{background-color:rgba(11,16,26,.8);border-color:#ffffff1f}
-.card-lift:hover{border-color:#60a5fa;box-shadow:0 0 0 1px #60a5fa55,0 14px 40px -14px #3b82f6aa}
-.mascot img{filter:drop-shadow(0 6px 10px #3b82f688)}
+.card-lift{background-color:rgba(10,17,12,.8);border-color:#ffffff1f}
+.card-lift:hover{border-color:#39ff88;box-shadow:0 0 0 1px #39ff8855,0 14px 40px -14px #16d96aaa}
+.mascot img{filter:drop-shadow(0 6px 10px #16d96a88)}
