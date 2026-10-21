@@ -199,7 +199,7 @@ export default function App(){
         </section>
         <div className="flex gap-2 text-sm">{[['Active','Active'],['Upcoming','Upcoming'],['Ended','Closed'],['All','All']].map(([k,l])=><button key={k} onClick={()=>setSt(k)} className={`rounded-lg px-4 py-1.5 border ${st===k?'bg-accent/10 border-accent/40 text-accent':'border-transparent text-zinc-500'}`}>{l}</button>)}</div>
         <div className="flex flex-wrap justify-between gap-4 items-end">
-          <div><span className="text-xs bg-accent text-ink rounded-full px-3 py-0.5 font-bold">02. Airdrops</span><h2 className="text-2xl md:text-3xl mt-3 holo-text">Explore the ecosystem</h2></div>
+          <div><h2 className="text-2xl md:text-3xl holo-text">Explore the ecosystem</h2></div>
           <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Add it to your own tracker (saved in this browser only).</span><button onClick={()=>setSub(!sub)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Add Project</button></div>
         </div>
         {sub&&<form className="rounded-2xl border border-line bg-panel p-4 grid sm:grid-cols-2 gap-2 text-sm" onSubmit={e=>{e.preventDefault()
