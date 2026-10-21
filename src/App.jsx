@@ -151,7 +151,7 @@ export default function App(){
   <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="mt-auto md:mt-0 md:ml-auto flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
 </nav>
 
-    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-6xl view-in">
+    <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-[1800px] mx-auto view-in">
       {view==='dash'&&<>
         <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="hidden md:block text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
