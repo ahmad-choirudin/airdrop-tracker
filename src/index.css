@@ -9,7 +9,7 @@ button:focus-visible{@apply outline outline-2 outline-accent}
 @keyframes pop{from{opacity:0;transform:scale(.85)}}
 @keyframes grow{from{transform:scaleX(0)}}
 @keyframes draw{to{stroke-dashoffset:0}}
-@keyframes glow{50%{box-shadow:0 0 28px #39ff8844}}
+@keyframes glow{50%{box-shadow:0 0 28px #ffffff44}}
 .stagger>*{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards}
 .stagger>:nth-child(1){animation-delay:calc(var(--b,0s) + 0.00s)}
 .stagger>:nth-child(2){animation-delay:calc(var(--b,0s) + 0.07s)}
@@ -30,7 +30,7 @@ button:focus-visible{@apply outline outline-2 outline-accent}
 .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s .3s ease-out forwards}
 .dot{transition:r .2s}
 .card-lift{transition:transform .25s,border-color .25s,box-shadow .25s}
-.card-lift:hover{transform:translateY(-4px);border-color:#39ff88;box-shadow:0 10px 30px -12px #39ff8866}
+.card-lift:hover{transform:translateY(-4px);border-color:#ffffff;box-shadow:0 10px 30px -12px #ffffff66}
 button{transition:background-color .2s,color .2s,transform .15s}
 button:active{transform:scale(.96)}
 [draggable=true]:active{opacity:.6}
@@ -44,58 +44,61 @@ button:active{transform:scale(.96)}
 @keyframes hop{0%,100%{transform:translateY(0) scale(1.1,.88)}50%{transform:translateY(-24px) scale(.94,1.08)}}
 @keyframes hopbig{0%,100%{transform:translateY(0)}50%{transform:translateY(-80px) rotate(360deg)}}
 
-body{background:#050805 radial-gradient(60rem 40rem at 85% -10%,#00ff6a22,transparent 60%),radial-gradient(50rem 35rem at -10% 110%,#00c85a1a,transparent 60%);background-attachment:fixed;font-family:Inter,system-ui,sans-serif}
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#39ff8814 1px,transparent 1px),linear-gradient(90deg,#39ff8814 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%)}
-input,select,textarea{background:#060a07;border-color:#1a2e1f}
-input:focus,select:focus,textarea:focus{border-color:#39ff88}
+body{background:#050505 radial-gradient(60rem 40rem at 85% -10%,#ffffff14,transparent 60%),radial-gradient(50rem 35rem at -10% 110%,#ffffff0b,transparent 60%);background-attachment:fixed;font-family:Inter,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#ffffff14 1px,transparent 1px),linear-gradient(90deg,#ffffff14 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 72%)}
+input,select,textarea{background:#0a0a0a;border-color:#262626}
+input:focus,select:focus,textarea:focus{border-color:#ffffff}
 h1,.serif,.text-5xl,.text-3xl{font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;letter-spacing:-.02em}
 h1.text-xl,h1.text-2xl{font-size:2.1rem;line-height:1.1}
-.holo-text{color:#86ffb8}
-.bg-panel{background-color:rgba(10,17,12,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.holo-card{border:1px solid #39ff8855;background:#0a110c}
-@keyframes holoGlow{50%{box-shadow:0 0 30px #16d96a55}}
+.holo-text{color:#e5e5e5}
+.bg-panel{background-color:rgba(14,14,14,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.holo-card{border:1px solid #ffffff55;background:#0e0e0e}
+@keyframes holoGlow{50%{box-shadow:0 0 30px #ffffff22}}
 .glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards,holoGlow 4s ease-in-out infinite}
-.card-lift{background-color:rgba(10,17,12,.8);border-color:#ffffff1f}
-.card-lift:hover{border-color:#39ff88;box-shadow:0 0 0 1px #39ff8855,0 14px 40px -14px #16d96aaa}
-.mascot img{filter:drop-shadow(0 6px 10px #16d96a88)}
+.card-lift{background-color:rgba(14,14,14,.8);border-color:#ffffff1f}
+.card-lift:hover{border-color:#ffffff;box-shadow:0 0 0 1px #ffffff55,0 14px 40px -14px #ffffff55}
+.mascot img{filter:drop-shadow(0 6px 10px #ffffff33)}
 
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
 
 /* perf */
 body{background-attachment:scroll!important}
 body::before{-webkit-mask-image:none!important;mask-image:none!important;opacity:.5}
-.bg-panel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background-color:#0a110c!important}
-.glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards!important;box-shadow:0 0 24px #39ff8833}
+.bg-panel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background-color:#0e0e0e!important}
+.glow{animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards!important;box-shadow:0 0 24px #ffffff33}
 .card-lift{transition:transform .2s,border-color .2s!important}
 
 /* light theme */
 html{color-scheme:dark}
 html.light{color-scheme:light}
-html.light body{background:#f3f8f5!important;color:#14201a}
-html.light body::before{background-image:linear-gradient(#0a8f4a14 1px,transparent 1px),linear-gradient(90deg,#0a8f4a14 1px,transparent 1px)}
-html.light .bg-ink{background-color:#f3f8f5}
+html.light body{background:#f6f6f4!important;color:#0a0a0a}
+html.light body::before{background-image:linear-gradient(#00000010 1px,transparent 1px),linear-gradient(90deg,#00000010 1px,transparent 1px)}
+html.light .bg-ink{background-color:#f6f6f4}
 html.light .bg-panel,html.light .bg-black,html.light .card-lift,html.light .holo-card{background-color:#fff!important}
-html.light .holo-card{border-color:#0a8f4a55}
-html.light .border-line,html.light .border-white\/15{border-color:#d3e3d8}
-html.light .border-zinc-500,html.light .border-zinc-600,html.light .border-zinc-300{border-color:#b9cfc0}
-html.light .border-accent{border-color:#0a8f4a}
-html.light .bg-line{background-color:#d3e3d8}
-html.light .text-white,html.light .text-zinc-100,html.light .\!text-white{color:#0f1a13!important}
-html.light .text-zinc-200,html.light .text-zinc-300{color:#2b3a31}
-html.light .text-zinc-400{color:#4b5d52}
-html.light .text-zinc-500{color:#667a6d}
-html.light .text-accent,html.light .holo-text{color:#0a8f4a}
-html.light .fill-accent{fill:#0a8f4a}
-html.light .bg-white\/10,html.light .bg-black\/40{background-color:#0a8f4a14}
-html.light .hover\:bg-white\/5:hover{background-color:#0a8f4a0d}
-html.light .hover\:bg-panel:hover{background-color:#e3f0e8}
+html.light .holo-card{border-color:#00000040}
+html.light .border-line,html.light .border-white\/15{border-color:#e4e4e7}
+html.light .border-zinc-500,html.light .border-zinc-600,html.light .border-zinc-300{border-color:#d4d4d8}
+html.light .border-accent{border-color:#0a0a0a}
+html.light .bg-line{background-color:#e4e4e7}
+html.light .text-white,html.light .text-zinc-100,html.light .\!text-white{color:#0a0a0a!important}
+html.light .text-zinc-200,html.light .text-zinc-300{color:#27272a}
+html.light .text-zinc-400{color:#52525b}
+html.light .text-zinc-500{color:#71717a}
+html.light .text-accent,html.light .holo-text{color:#0a0a0a}
+html.light .fill-accent{fill:#0a0a0a}
+html.light .bg-white\/10,html.light .bg-black\/40{background-color:#00000010}
+html.light .hover\:bg-white\/5:hover{background-color:#0000000a}
+html.light .hover\:bg-panel:hover{background-color:#ececec}
 html.light .text-amber-300,html.light .text-amber-400{color:#b45309}
 html.light .text-red-300,html.light .text-red-400{color:#dc2626}
-html.light input,html.light select,html.light textarea{background:#fff;border-color:#c5d8cb;color:#14201a}
-html.light input:focus,html.light select:focus,html.light textarea:focus{border-color:#0a8f4a}
-html.light .card-lift:hover{border-color:#0a8f4a;box-shadow:0 8px 24px -10px #0a8f4a55}
-html.light .glow{box-shadow:0 4px 24px #0a8f4a22}
-html.light svg line{stroke:#d3e3d8}
-html.light svg circle[fill="#fff"]{fill:#0a8f4a}
-html.light svg path.draw{stroke:#0a8f4a}
+html.light input,html.light select,html.light textarea{background:#fff;border-color:#d4d4d8;color:#0a0a0a}
+html.light input:focus,html.light select:focus,html.light textarea:focus{border-color:#0a0a0a}
+html.light .card-lift:hover{border-color:#0a0a0a;box-shadow:0 8px 24px -10px #00000040}
+html.light .glow{box-shadow:0 4px 24px #0000001a}
+html.light svg line{stroke:#e4e4e7}
+html.light svg circle[fill="#fff"]{fill:#0a0a0a}
+html.light svg path.draw{stroke:#0a0a0a}
 html.light .\[color-scheme\:dark\]{color-scheme:light}
+
+html body .bg-line{background-color:#ffffff1f}
+html body .hover\:bg-panel:hover{background-color:#ffffff0f}

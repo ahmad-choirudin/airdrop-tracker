@@ -1,1 +1,1 @@
-export default {content:['./index.html','./src/**/*.{js,jsx}'],theme:{extend:{colors:{ink:'#050805',panel:'#0a110c',line:'#1a2e1f',accent:'#39ff88'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}},plugins:[]}
+export default {content:['./index.html','./src/**/*.{js,jsx}'],theme:{extend:{colors:{ink:'#050505',panel:'#0e0e0e',line:'#262626',accent:'#ffffff'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}},plugins:[]}
