@@ -70,3 +70,7 @@ html body nav button[class*="border-accent/30"]{box-shadow:0 0 0 1px #7c6cff55,0
 html body input:focus,html body select:focus,html body textarea:focus{border-color:#a99cff}
 html body svg path.draw{filter:drop-shadow(0 0 6px #7c6cff)}
 html body .mascot img{filter:drop-shadow(0 6px 12px #7c6cff88)}
+
+/* hamburger lebih jelas di light mode */
+html.light body header button[aria-label="Menu"]{color:#000 !important;border-color:#00000066 !important;background-color:#fff !important}
+html.light body header button[aria-label="Menu"] svg{stroke:#000 !important}
