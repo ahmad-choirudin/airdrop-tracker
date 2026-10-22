@@ -102,3 +102,10 @@ html.light .\[color-scheme\:dark\]{color-scheme:light}
 
 html body .bg-line{background-color:#ffffff1f}
 html body .hover\:bg-panel:hover{background-color:#ffffff0f}
+
+/* Hero Color and Overview */
+html body .hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#0e7490 100%)!important;border-color:#6366f180!important}
+html:not(.light) body .hero p{color:#c7d2fe!important}
+html body .holo-card{background:linear-gradient(160deg,#064e4b 0%,#0b1220 80%)!important;border-color:#2dd4bf80!important;box-shadow:0 0 28px #2dd4bf33!important}
+html.light body .hero{background:linear-gradient(135deg,#e0e7ff,#cffafe)!important;border-color:#a5b4fc!important}
+html.light body .holo-card{background:linear-gradient(160deg,#ccfbf1,#f0fdfa)!important;border-color:#5eead4!important;box-shadow:0 4px 24px #14b8a633!important}
