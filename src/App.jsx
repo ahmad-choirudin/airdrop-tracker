@@ -142,7 +142,7 @@ export default function App(){
 <div onClick={()=>setMenu(false)} className={`md:hidden fixed inset-0 z-40 bg-black/60 transition-opacity ${menu?'opacity-100':'pointer-events-none opacity-0'}`}/>
 
 {/* Drawer on mobile */}
-<nav className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-full md:max-w-none md:grid md:grid-cols-[1fr-auto-1fr] md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-transparent`}>
+ <nav style={{gridTemplateColumns:'1fr auto 1fr'}} className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-full md:max-w-none md:grid md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-transparent`}>
   <div className="flex items-start justify-between px-3 py-2 md:justify-self-start">
     <div className="flex items-center gap-3"><img src={logo} alt="CUBBIE" className="h-9 w-9 object-contain"/><div className="serif text-2xl leading-none">CUBBIE<span className="block mt-1 text-xs text-zinc-400 font-sans tracking-wide">Airdrop Tracker</span></div></div>
     <button aria-label="Close menu" onClick={()=>setMenu(false)} className="md:hidden text-zinc-400"><X size={20}/></button>
