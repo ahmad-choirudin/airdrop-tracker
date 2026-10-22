@@ -142,13 +142,14 @@ export default function App(){
 <div onClick={()=>setMenu(false)} className={`md:hidden fixed inset-0 z-40 bg-black/60 transition-opacity ${menu?'opacity-100':'pointer-events-none opacity-0'}`}/>
 
 {/* Drawer on mobile */}
-<nav className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-full md:max-w-none md:flex-row md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-transparent`}>
-  <div className="flex items-start justify-between px-3 py-2">
+<nav className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-full md:max-w-none md:grid md:grid-cols-[1fr-auto-1fr] md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-transparent`}>
+  <div className="flex items-start justify-between px-3 py-2 md:justify-self-start">
     <div className="flex items-center gap-3"><img src={logo} alt="CUBBIE" className="h-9 w-9 object-contain"/><div className="serif text-2xl leading-none">CUBBIE<span className="block mt-1 text-xs text-zinc-400 font-sans tracking-wide">Airdrop Tracker</span></div></div>
     <button aria-label="Close menu" onClick={()=>setMenu(false)} className="md:hidden text-zinc-400"><X size={20}/></button>
   </div>
-  {NAV.map(([k,l,I])=><button key={k} onClick={()=>{setView(k);setMenu(false)}} className={`flex items-center gap-3 px-4 py-3 md:px-3 md:py-2 rounded-xl md:rounded-lg text-base md:text-sm whitespace-nowrap border ${view===k?'bg-accent/10 border-accent/30 text-accent font-semibold':'border-transparent hover:bg-panel'}`}><I size={20}/>{l}</button>)}
-  <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="mt-auto md:mt-0 md:ml-auto flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
+  <div className="flex flex-col gap-1 md:flex-row md:justify-self-center">
+  {NAV.map(([k,l,I])=><button key={k} onClick={()=>{setView(k);setMenu(false)}} className={`flex items-center gap-3 px-4 py-3 md:px-3 md:py-2 rounded-xl md:rounded-lg text-base md:text-sm whitespace-nowrap border ${view===k?'bg-accent/10 border-accent/30 text-accent font-semibold':'border-transparent hover:bg-panel'}`}><I size={20}/>{l}</button>)}</div>
+  <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="mt-auto md:mt-0 md:justify-self-end flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
 </nav>
 
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-[1800px] view-in">
