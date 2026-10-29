@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="PASTE_AIRDROP_DEMO_LINK"><strong>↗ OPEN LIVE DEMO</strong></a>
+  <a href="https://dropwatch.web.id"><strong>↗ OPEN LIVE DEMO</strong></a>
   &nbsp; · &nbsp;
   <a href="https://github.com/ahmad-choirudin"><strong>GITHUB PROFILE</strong></a>
 </p>
@@ -60,7 +60,7 @@ Fully responsive, so it works on both mobile and desktop.
 ## ◈ PREVIEW
 
 <p align="center">
-  <a href="PASTE_AIRDROP_DEMO_LINK">
+  <a href="https://dropwatch.web.id/">
     <img src="docs/preview.jpg" alt="Airdrop Tracker dashboard preview" width="100%" />
   </a>
   <br />
@@ -143,9 +143,9 @@ Tasks, favorites, priorities, notes, and the activity log are stored in the brow
 Web3 Research · Crypto Markets · DeFi · Frontend Development
 
 <p align="center">
-  <a href="https://www.ahmadchoirudin.my.id/">Portfolio</a>
+  <a href="https://ahmadchoirudin.my.id/">Portfolio</a>
   &nbsp; · &nbsp;
-  <a href="PASTE_AIRDROP_DEMO_LINK">Live Demo</a>
+  <a href="https://dropwatch.web.id">Live Demo</a>
   &nbsp; · &nbsp;
   <a href="https://github.com/ahmad-choirudin">GitHub</a>
   &nbsp; · &nbsp;
