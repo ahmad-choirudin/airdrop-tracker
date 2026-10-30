@@ -10,7 +10,7 @@ const t0=()=>{const d=new Date();d.setHours(0,0,0,0);return d}
 const at=n=>new Date(t0().getTime()+n*DAY)
 const fmt=d=>d.toLocaleDateString('en-US',{day:'numeric',month:'short'})
 const same=(a,b)=>a.toDateString()===b.toDateString()
-const tone={Confirmed:'text-accent border-accent/40',Potential:'text-amber-300 border-amber-300/40',Unverified:'text-red-400 border-red-400/40'}
+const tone={Confirmed:'text-accent border-accent/30 bg-accent/10',Potential:'text-amber-300 border-amber-300/30 bg-amber-400/10',Unverified:'text-red-400 border-red-400/30 bg-red-400/10'}
 const PR={High:0,Medium:1,Low:2}
 const days=d=>Math.round((new Date(d+'T00:00:00')-t0())/DAY)
 const safe=u=>/^https?:\/\//i.test(u||'')?u:'#'
@@ -26,7 +26,7 @@ function useLS(k,init){
   useEffect(()=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},[k,v])
   return [v,s]
 }
-const Badge=({i})=><span className={`text-xs px-2 py-0.5 rounded-full border ${tone[i]}`}>{i}</span>
+const Badge=({i})=><span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full border ${tone[i]}`}><span className="w-1.5 h-1.5 rounded-full bg-current"/>{i}</span>
 const Bar=({v})=><div className="h-1.5 rounded bg-line"><div className="h-full rounded bg-accent grow" style={{width:v+'%'}}/></div>
 
 function Count({to}){
@@ -114,12 +114,12 @@ export default function App(){
     new Notification('CUBBIE Airdrop Tracker',{body:soon.length?soon.map(x=>`${x.n}: ${dlText(x)}`).join('\n'):'No deadlines within 1 day.'})
   }
   const Card=({p})=>(
-    <div className="rounded-2xl border border-zinc-600 bg-black p-5 flex flex-col gap-3 min-h-44 card-lift">
-      <div className="flex justify-between items-start"><button onClick={()=>setOpen(p.id)} className="flex items-center gap-3 text-left"><Av p={p} s={40}/><span className="font-bold">{p.n}</span></button>
-        <button aria-label="Favorite" onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})}><Star size={18} className={w[p.id]?.fav?'fill-accent text-accent star-on':'text-zinc-500'}/></button></div>
-      <p className="text-sm text-zinc-300 flex-1" style={{display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.r}</p>
-      <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-400">{p.c} · {p.k} · {dlText(p)}</span></div>
-      <div className="flex justify-between items-center"><div className="w-24"><Bar v={pct(p.id)}/></div><div className="flex gap-3 text-zinc-400 text-sm"><a href={p.x} target="_blank" rel="noreferrer" aria-label="X">𝕏</a><a href={p.w} target="_blank" rel="noreferrer" aria-label="Website">↗</a></div></div>
+    <div className="rounded-2xl border border-line bg-panel p-5 flex flex-col gap-3 min-h-44 card-lift">
+      <div className="flex justify-between items-start"><button onClick={()=>setOpen(p.id)} className="flex items-center gap-3 text-left"><Av p={p} s={40}/><span className="font-semibold text-white tracking-tight">{p.n}</span></button>
+        <button aria-label="Favorite" onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})}><Star size={18} className={w[p.id]?.fav?'fill-accent text-accent star-on':'text-zinc-500 hover:text-zinc-300'}/></button></div>
+      <p className="text-sm text-zinc-400 flex-1" style={{display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.r}</p>
+      <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-500">{p.c} · {p.k} · {dlText(p)}</span></div>
+      <div className="flex justify-between items-center"><div className="w-24"><Bar v={pct(p.id)}/></div><div className="flex gap-3 text-zinc-500 text-sm [&>a]:transition-colors [&>a:hover]:text-accent"><a href={p.x} target="_blank" rel="noreferrer" aria-label="X">𝕏</a><a href={p.w} target="_blank" rel="noreferrer" aria-label="Website">↗</a></div></div>
     </div>)
   const check=p=>(
     <div className="space-y-2">
@@ -141,19 +141,19 @@ export default function App(){
 <div onClick={()=>setMenu(false)} className={`md:hidden fixed inset-0 z-40 bg-black/60 transition-opacity ${menu?'opacity-100':'pointer-events-none opacity-0'}`}/>
 
 {/* Drawer on mobile */}
- <nav style={{gridTemplateColumns:'1fr auto 1fr'}} className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:static md:z-auto md:w-full md:max-w-none md:grid md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-transparent`}>
+ <nav style={{gridTemplateColumns:'1fr auto 1fr'}} className={`fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs flex flex-col gap-1 p-3 bg-panel border-r border-line transition-transform duration-300 ${menu?'translate-x-0':'-translate-x-full'} md:sticky md:top-0 md:z-[5] md:w-full md:max-w-none md:grid md:items-center md:border-r-0 md:border-b md:translate-x-0 md:bg-ink`}>
   <div className="flex items-start justify-between px-3 py-2 md:justify-self-start">
     <div className="flex items-center gap-3"><img src={logo} alt="CUBBIE" className="brand-logo h-9 w-9 object-contain"/><div className="serif text-2xl leading-none">CUBBIE<span className="block mt-1 text-xs text-zinc-400 font-sans tracking-wide">Airdrop Tracker</span></div></div>
     <button aria-label="Close menu" onClick={()=>setMenu(false)} className="md:hidden text-zinc-400"><X size={20}/></button>
   </div>
   <div className="flex flex-col gap-1 md:flex-row md:justify-self-center">
-  {NAV.map(([k,l,I])=><button key={k} onClick={()=>{setView(k);setMenu(false)}} className={`flex items-center gap-3 px-4 py-3 md:px-3 md:py-2 rounded-xl md:rounded-lg text-base md:text-sm whitespace-nowrap border ${view===k?'bg-accent/10 border-accent/30 text-accent font-semibold':'border-transparent hover:bg-panel'}`}><I size={20}/>{l}</button>)}</div>
+  {NAV.map(([k,l,I])=><button key={k} onClick={()=>{setView(k);setMenu(false)}} className={`flex items-center gap-3 px-4 py-3 md:px-3 md:py-2 rounded-xl md:rounded-lg text-base md:text-sm whitespace-nowrap border ${view===k?'bg-accent/10 border-accent/25 text-accent font-semibold':'border-transparent text-zinc-400 hover:text-white hover:bg-white/5'}`}><I size={20}/>{l}</button>)}</div>
   <button role="switch" aria-checked={theme==='light'} aria-label="Toggle light mode" onClick={()=>setTheme(theme==='light'?'dark':'light')} className="mt-auto md:mt-0 md:justify-self-end flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap hover:bg-panel">{theme==='light'?<Sun size={16}/>:<Moon size={16}/>}<span>{theme==='light'?'Light':'Dark'}</span><span className="relative w-9 h-5 rounded-full border border-line bg-line shrink-0"><span className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-accent transition-all ${theme==='light'?'left-[1.15rem]':'left-0.5'}`}/></span></button>
 </nav>
 
     <main key={view} className="flex-1 min-w-0 p-4 md:p-6 space-y-4 max-w-[1800px] view-in">
       {view==='dash'&&<>
-        <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="hidden md:block text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
+        <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="hidden md:block text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5 hover:border-accent/50 hover:bg-white/5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 hover:border-accent/50 hover:bg-white/5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
           <section className="holo-card rounded-2xl p-5 space-y-3 glow">
             <div className="text-xs text-accent">Overview</div>
@@ -195,6 +195,4 @@ export default function App(){
             <p className="mt-3 text-sm text-zinc-400">Track deadlines, tasks and rewards for every project, with clear verification status. No promises, just the facts.</p>
           </div>
           <img src={logo} alt="" className="hero-logo"/>
-          <Sp s={22} style={{right:'38%',top:'18%'}}/><Sp s={14} style={{right:'14%',top:'12%',animationDelay:'1s'}}/><Sp s={18} style={{right:'8%',bottom:'16%',animationDelay:'2s'}}/>
-        </section>
-        <div className="flex gap-2 text-sm">{[['Active','Active'],['Upcoming','Upcoming'],['Ended','Closed'],['All','All']].map(([k,l])=><button key={k} onClick={()=>setSt(k)} className={`rounded
+          <Sp s={22} style={{right:'38%',top:'18%
