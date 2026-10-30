@@ -156,34 +156,34 @@ export default function App(){
         <div className="flex flex-wrap items-center justify-between gap-2"><h1 className="hidden md:block text-xl font-bold">Dashboard</h1><div className="flex gap-2 text-xs"><button onClick={exportData} className="border border-line rounded-full px-3 py-1.5 hover:border-accent/50 hover:bg-white/5">Export data</button><label className="border border-line rounded-full px-3 py-1.5 hover:border-accent/50 hover:bg-white/5 cursor-pointer">Import data<input type="file" accept="application/json,.json" className="hidden" onChange={importData}/></label></div></div>
         <div className="grid lg:grid-cols-[300px_1fr] gap-3 stagger">
           <section className="holo-card rounded-2xl p-5 space-y-3 glow">
-            <div className="text-xs text-accent">Overview</div>
-            <div className="flex justify-between items-end"><div><div className="text-5xl font-bold"><Count to={data.length}/></div><div className="text-sm text-zinc-300">Projects tracked</div></div><div className="rounded-xl bg-black/40 px-3 py-2 text-center"><div className="text-2xl font-bold"><Count to={new Set(data.map(d=>d.c)).size}/></div><div className="text-xs">Chains</div></div></div>
-            <div><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-bold">{live[0]?.n}</div><div className="text-sm text-zinc-300">{live[0]&&dlText(live[0])}</div></div>
-            <button onClick={()=>setView('cal')} className="rounded-full bg-accent text-ink text-sm font-bold px-4 py-1.5">Open calendar</button>
+            <div className="text-xs font-medium uppercase tracking-wider text-accent">Overview</div>
+            <div className="flex justify-between items-end"><div><div className="text-5xl font-bold"><Count to={data.length}/></div><div className="text-sm text-zinc-300">Projects tracked</div></div><div className="rounded-xl bg-black/40 px-3 py-2 text-center"><div className="text-2xl font-bold"><Count to={new Set(data.map(d=>d.c)).size}/></div><div className="text-xs text-zinc-400">Chains</div></div></div>
+            <div><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-semibold tracking-tight">{live[0]?.n}</div><div className="text-sm text-zinc-300">{live[0]&&dlText(live[0])}</div></div>
+            <button onClick={()=>setView('cal')} className="rounded-full bg-accent text-ink text-sm font-semibold px-4 py-1.5 hover:brightness-110">Open calendar</button>
           </section>
           <section className="rounded-2xl border border-line bg-panel p-5 space-y-4">
-            <div className="flex justify-between"><h2 className="font-bold">My projects</h2><button onClick={()=>setView('explore')} className="text-xs border border-line rounded-full px-3 py-1">Go to Explore</button></div>
-            <div className="grid grid-cols-3 gap-2">{live.slice(0,3).map(d=><button key={d.id} onClick={()=>setOpen(d.id)} className="text-left rounded-xl border border-line p-3 flex gap-2 items-center"><Av p={d} s={32}/><span className="truncate"><span className="block text-sm font-bold truncate">{d.n}</span><span className="text-xs text-zinc-400">{d.c}</span></span></button>)}</div>
-            <div><div className="text-xs text-zinc-400 mb-1">Status distribution</div><div className="flex h-2 rounded overflow-hidden">{ST.map(([k,c])=><div key={k} className={c+' grow'} style={{width:data.filter(d=>d.s===k).length/data.length*100+'%'}}/>)}</div></div>
-            <div className="grid grid-cols-3 text-sm">{ST.map(([k,c])=><div key={k} className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${c}`}/>{k} <b>{data.filter(d=>d.s===k).length}</b></div>)}</div>
+            <div className="flex justify-between"><h2 className="text-sm font-semibold text-white">My projects</h2><button onClick={()=>setView('explore')} className="text-xs border border-line rounded-full px-3 py-1 hover:border-accent/50 hover:bg-white/5">Go to Explore</button></div>
+            <div className="grid grid-cols-3 gap-2">{live.slice(0,3).map(d=><button key={d.id} onClick={()=>setOpen(d.id)} className="text-left rounded-xl border border-line p-3 flex gap-2 items-center hover:border-accent/40 hover:bg-white/5"><Av p={d} s={32}/><span className="truncate"><span className="block text-sm font-semibold text-white truncate">{d.n}</span><span className="text-xs text-zinc-400">{d.c}</span></span></button>)}</div>
+            <div><div className="text-xs text-zinc-400 mb-1">Status distribution</div><div className="flex h-1.5 gap-0.5 rounded-full overflow-hidden">{ST.map(([k,c])=><div key={k} className={c+' grow'} style={{width:data.filter(d=>d.s===k).length/data.length*100+'%'}}/>)}</div></div>
+            <div className="grid grid-cols-3 text-sm">{ST.map(([k,c])=><div key={k} className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${c}`}/>{k} <b className="font-mono font-medium text-white">{data.filter(d=>d.s===k).length}</b></div>)}</div>
           </section>
         </div>
         <div className="grid lg:grid-cols-[1fr_320px] gap-3 stagger late">
           <section className="rounded-2xl border border-line bg-panel p-5">
-            <h2 className="font-bold mb-2">Task progress by project <span className="text-accent text-sm">· overall <Count to={total}/>%</span></h2>
+            <h2 className="text-sm font-semibold text-white mb-2">Task progress by project <span className="text-accent font-mono">· overall <Count to={total}/>%</span></h2>
             <svg viewBox="0 0 600 200" className="w-full text-accent"><defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stopColor="currentColor"/><stop offset=".5" stopColor="currentColor"/><stop offset="1" stopColor="currentColor"/></linearGradient><linearGradient id="ha" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="currentColor" stopOpacity=".35"/><stop offset="1" stopColor="currentColor" stopOpacity="0"/></linearGradient></defs>
-              {[0,50,100].map(v=><g key={v}><line x1="40" x2="580" y1={170-v*1.4} y2={170-v*1.4} stroke="#ffffff1c"/><text x="4" y={174-v*1.4} fill="#71717a" fontSize="11">{v}%</text></g>)}
+              {[0,50,100].map(v=><g key={v}><line x1="40" x2="580" y1={170-v*1.4} y2={170-v*1.4} strokeDasharray="3 4"/><text x="4" y={174-v*1.4} fontSize="11">{v}%</text></g>)}
               <path d={pts.length?path+` L${pts[pts.length-1][0]} 170 L${pts[0][0]} 170Z`:''} fill="url(#ha)" className="fade-in" style={{animationDelay:'1.1s'}}/>
               <path d={path} fill="none" stroke="url(#hg)" strokeWidth="2.5" pathLength="1" className="draw"/>
-              {pts.map((a,i)=><g key={i} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)} onClick={()=>setHov(i)}><circle cx={a[0]} cy={a[1]} r={hov===i?6:4} fill="currentColor" className="dot"/><circle cx={a[0]} cy={a[1]} r="16" fill="transparent"/><text x={a[0]} y="192" fill="#a1a1aa" fontSize="11" textAnchor="middle">{live[i].n.slice(0,9)}</text></g>)}
+              {pts.map((a,i)=><g key={i} onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)} onClick={()=>setHov(i)}><circle cx={a[0]} cy={a[1]} r={hov===i?6:4} fill="currentColor" className="dot"/><circle cx={a[0]} cy={a[1]} r="16" fill="transparent"/><text x={a[0]} y="192" fontSize="11" textAnchor="middle">{live[i].n.slice(0,9)}</text></g>)}
             </svg>
-            {hov!=null&&<div className="text-sm"><b>{live[hov].n}</b> · {pct(live[hov].id)}% complete · {dlText(live[hov])}</div>}
+            {hov!=null&&<div className="text-sm text-zinc-400"><b className="text-white">{live[hov].n}</b> · {pct(live[hov].id)}% complete · {dlText(live[hov])}</div>}
           </section>
           <section className="rounded-2xl border border-line bg-panel p-5 space-y-3">
-            <div className="flex justify-between"><h2 className="font-bold">Activity</h2><div className="flex gap-2 text-xs">{[['all','ALL'],['done','DONE'],['add','ADDED']].map(([k,l])=><button key={k} onClick={()=>setTab(k)} className={tab===k?'text-accent':'text-zinc-500'}>{l}</button>)}</div></div>
+            <div className="flex justify-between"><h2 className="text-sm font-semibold text-white">Activity</h2><div className="flex gap-2 text-xs">{[['all','ALL'],['done','DONE'],['add','ADDED']].map(([k,l])=><button key={k} onClick={()=>setTab(k)} className={`font-medium tracking-wider ${tab===k?'text-accent':'text-zinc-500 hover:text-zinc-300'}`}>{l}</button>)}</div></div>
             {log.filter(l=>tab==='all'||l.ty===tab).slice(0,6).map((l,i)=><div key={i} className="flex gap-2 text-sm border-b border-line pb-2"><span className={`w-2 h-2 mt-1.5 rounded-full shrink-0 ${l.ty==='done'?'bg-accent':l.ty==='add'?'bg-zinc-400':'bg-amber-400'}`}/><span>{l.m}<span className="block text-xs text-zinc-500">{new Date(l.t).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span></span></div>)}
             {!log.some(l=>tab==='all'||l.ty===tab)&&<p className="text-sm text-zinc-500">No activity yet. Move a task on the Tasks board to start.</p>}
-            <button onClick={()=>setView('tasks')} className="w-full rounded-full border border-line py-2 text-sm">Go to task board</button>
+            <button onClick={()=>setView('tasks')} className="w-full rounded-full border border-line py-2 text-sm hover:border-accent/50 hover:bg-white/5">Go to task board</button>
           </section>
         </div>
       </>}
@@ -195,4 +195,202 @@ export default function App(){
             <p className="mt-3 text-sm text-zinc-400">Track deadlines, tasks and rewards for every project, with clear verification status. No promises, just the facts.</p>
           </div>
           <img src={logo} alt="" className="hero-logo"/>
-          <Sp s={22} style={{right:'38%',top:'18%
+          <Sp s={22} style={{right:'38%',top:'18%'}}/><Sp s={14} style={{right:'14%',top:'12%',animationDelay:'1s'}}/><Sp s={18} style={{right:'8%',bottom:'16%',animationDelay:'2s'}}/>
+        </section>
+        <div className="flex gap-2 text-sm">{[['Active','Active'],['Upcoming','Upcoming'],['Ended','Closed'],['All','All']].map(([k,l])=><button key={k} onClick={()=>setSt(k)} className={`rounded-lg px-4 py-1.5 border ${st===k?'bg-accent/10 border-accent/40 text-accent':'border-transparent text-zinc-500'}`}>{l}</button>)}</div>
+        <div className="flex flex-wrap justify-between gap-4 items-end">
+          <div><h2 className="text-2xl md:text-3xl holo-text">Explore the ecosystem</h2></div>
+          <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Add it to your own tracker (saved in this browser only).</span><button onClick={()=>setSub(!sub)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Add Project</button></div>
+        </div>
+        {sub&&<form className="rounded-2xl border border-line bg-panel p-4 grid sm:grid-cols-2 gap-2 text-sm" onSubmit={e=>{e.preventDefault()
+          const f=e.target.elements,v=n=>f[n].value.trim()
+          const id=Math.max(100,...custom.map(c=>c.id))+1,t=iso(new Date())
+          setCustom(c=>[...c,{id,n:v('pn'),c:v('pc')||'Other',k:v('pk')||'Other',s:v('ps'),i:v('pi'),deadline:v('pd'),added:t,verified:t,task:v('pt').split(',').map(x=>x.trim()).filter(Boolean).join(', '),reward:v('prw'),w:v('pw'),x:v('px'),r:v('pnote')}])
+          note('Added project: '+v('pn'),'add');e.target.reset();setSub(false)}}>
+          <input name="pn" required placeholder="Project name"/>
+          <input name="pc" placeholder="Chain (e.g. Ethereum)"/>
+          <input name="pk" placeholder="Category (e.g. DeFi)"/>
+          <input name="pd" type="date" className="[color-scheme:dark]"/>
+          <select name="ps"><option>Active</option><option>Upcoming</option></select>
+          <select name="pi"><option>Unverified</option><option>Potential</option><option>Confirmed</option></select>
+          <input name="pt" placeholder="Task types (comma separated)"/>
+          <select name="prw"><option>Airdrop</option><option>Points</option></select>
+          <input name="pw" placeholder="Official website (https://...)"/>
+          <input name="px" placeholder="X link (https://...)"/>
+          <input name="pnote" className="sm:col-span-2" placeholder="Short note"/>
+          <button className="sm:col-span-2 bg-accent text-ink font-bold rounded-lg py-2">Save project</button>
+        </form>}
+        {(()=>{
+          const act=live.filter(x=>x.dl>=0),nxt=act.find(x=>x.dl<9999)
+          const hot=[...act.filter(x=>x.ad>-7),...act.filter(x=>x.ad<=-7)].filter(x=>!nxt||x.id!==nxt.id).slice(0,2)
+          const stat=[['Upcoming',data.filter(x=>x.s==='Upcoming').length,'border-accent'],['Confirmed',data.filter(x=>x.i==='Confirmed'&&x.s!=='Ended').length,'border-accent'],['Due in 3 days',act.filter(x=>x.dl<=3).length,'border-amber-400'],['Overdue',live.filter(x=>x.dl<0).length,'border-red-400']]
+          return(
+          <div className="grid md:grid-cols-3 gap-3 stagger">
+            <section className="rounded-2xl border border-line bg-panel p-4">
+              <h2 className="text-sm font-bold mb-3">Current Activity Overview</h2>
+              <div className="grid grid-cols-2 gap-3">{stat.map(([l,n,c])=><div key={l} className={`border-l-2 ${c} pl-3`}><div className="text-2xl font-bold">{n}</div><div className="text-xs text-zinc-400">{l}</div></div>)}</div>
+            </section>
+            <section className="rounded-2xl border border-line bg-panel p-4 flex flex-col">
+              <h2 className="text-sm font-bold mb-3">Next Reward</h2>
+              {nxt?<>
+                <div className="flex-1"><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-bold">{nxt.n}</div><div className="text-sm text-zinc-300">{dlText(nxt)} · {fmt(at(nxt.dl))}</div></div>
+                <button onClick={()=>setOpen(nxt.id)} className="mt-3 self-start text-xs rounded-full border border-accent text-accent px-3 py-1">Open details</button>
+              </>:<p className="text-sm text-zinc-500">No upcoming deadlines.</p>}
+            </section>
+            <section className="rounded-2xl border border-line bg-panel p-4">
+              <h2 className="text-sm font-bold mb-3">Hot events</h2>
+              <div className="space-y-2">{hot.map(h=><button key={h.id} onClick={()=>setOpen(h.id)} className="w-full text-left rounded-xl border border-line p-2.5 flex items-center gap-3 hover:bg-white/5"><Av p={h} s={32}/><span className="min-w-0"><span className="block text-sm font-bold truncate">{h.n}</span><span className="block text-xs text-zinc-400 truncate">{h.c} · {dlText(h)}</span></span></button>)}
+                {!hot.length&&<p className="text-sm text-zinc-500">Nothing hot right now.</p>}</div>
+            </section>
+          </div>)
+        })()}
+        <div className="flex flex-wrap gap-2 items-center">
+          {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink border-transparent':'border-zinc-500'}`}>{c}</button>)}
+          <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <select value={chain} onChange={e=>setChain(e.target.value)}>{chains.map(c=><option key={c}>{c}</option>)}</select>
+          <select value={tk} onChange={e=>setTk(e.target.value)}><option value="">Task Type</option>{taskTypes.map(c=><option key={c}>{c}</option>)}</select>
+          <select value={st} onChange={e=>setSt(e.target.value)}>{['All','Active','Upcoming','Ended'].map(c=><option key={c} value={c}>{c==='All'?'Status':c}</option>)}</select>
+          <select value={sort} onChange={e=>setSort(e.target.value)}><option value="dl">Sort: Deadline</option><option value="ad">Sort: Date added</option><option value="pr">Sort: Priority</option></select>
+          <button aria-label="Grid" onClick={()=>setMode('grid')} className={mode==='grid'?'text-accent':'text-zinc-500'}><LayoutGrid size={20}/></button>
+          <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500'}><List size={20}/></button>
+        </div>
+
+        <div className="md:hidden space-y-3">
+  {list.map(d=>(
+    <div key={d.id} className="rounded-2xl border border-line bg-panel overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-line">
+        <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] uppercase tracking-wider text-zinc-300">{d.k}</span>
+        <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] uppercase tracking-wider text-zinc-300">{d.s}</span>
+      </div>
+      <div className="p-4 space-y-2">
+        <div className="flex items-center gap-2"><Av p={d} s={28}/><h3 className="text-lg font-bold">{d.n}</h3></div>
+        <p className="text-sm text-zinc-400">{d.c} · {d.reward} · {dlText(d)}</p>
+        <div className="flex items-center gap-3"><div className="flex-1"><Bar v={pct(d.id)}/></div><span className="text-xs text-zinc-500">{pct(d.id)}%</span></div>
+        <div className="flex items-center justify-between pt-1">
+          <button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={20} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button>
+          <button onClick={()=>setOpen(d.id)} className="rounded-lg border border-line px-4 py-2 text-sm font-medium">View details</button>
+        </div>
+      </div>
+    </div>))}
+       </div>
+
+        {mode==='grid'
+  ?<div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Fragment key={d.id}>{Card({p:d})}</Fragment>)}</div>
+  :<div className="hidden md:block rounded-2xl border border-line bg-panel overflow-x-auto">
+    <table className="w-full min-w-[900px] text-sm">
+      <thead><tr className="text-left text-xs text-zinc-500 border-b border-line">
+        <th className="p-3 font-medium">Name</th><th className="p-3 font-medium">Chain · Category</th><th className="p-3 font-medium">Task Type</th><th className="p-3 font-medium">Status</th><th className="p-3 font-medium">Reward</th><th className="p-3 font-medium">Deadline</th><th className="p-3 font-medium">Progress</th><th className="p-3 w-10"></th>
+      </tr></thead>
+      <tbody>{list.map(d=>(
+        <tr key={d.id} onClick={()=>setOpen(d.id)} className="border-b border-line last:border-0 hover:bg-white/5 cursor-pointer">
+          <td className="p-3"><div className="flex items-center gap-3"><Av p={d} s={32}/><span className="font-bold">{d.n}</span></div></td>
+          <td className="p-3 whitespace-nowrap"><span className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{d.c}</span> <span className="rounded bg-accent/15 text-accent px-2 py-0.5 text-xs">{d.k}</span></td>
+          <td className="p-3"><div className="flex gap-1 flex-wrap">{(d.task||'').split(', ').filter(Boolean).map(t=><span key={t} className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{t}</span>)}</div></td>
+          <td className="p-3"><Badge i={d.i}/><div className="text-xs text-zinc-500 mt-1">{d.s}</div></td>
+          <td className="p-3 whitespace-nowrap">{d.reward}</td>
+          <td className="p-3 whitespace-nowrap">{dlText(d)}<div className="text-xs text-zinc-500">{d.s!=='Ended'&&d.dl<9999&&fmt(at(d.dl))}</div></td>
+          <td className="p-3 w-32"><Bar v={pct(d.id)}/><div className="text-xs text-zinc-500 mt-1">{pct(d.id)}%</div></td>
+          <td className="p-3" onClick={e=>e.stopPropagation()}><button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={18} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button></td>
+        </tr>))}</tbody>
+    </table>
+  </div>}
+        {!list.length&&<p className="text-zinc-500">No projects match. Change the search or filters.</p>}
+      </>}
+
+      {view==='tasks'&&(()=>{
+        const groups=data.map(d=>({d,ts:vis.filter(x=>x.p.id===d.id)})).filter(g=>g.ts.length).sort((a,b)=>a.d.dl-b.d.dl)
+        const chips=[['all','All'],['todo','Todo'],['doing','Doing'],['done','Done'],['archived','Archived']]
+        return(
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h1 className="text-xl font-bold">Tasks <span className="text-sm text-zinc-500 font-normal">{vis.length} shown · {board.length} total</span></h1>
+            <div className="flex gap-2 items-center">
+              <div className="inline-flex rounded-lg border border-line overflow-hidden">{[['list','List'],['board','Board']].map(([k,l])=><button key={k} onClick={()=>setTv(k)} className={`px-3 py-1.5 text-sm ${tv===k?'bg-accent/10 text-accent':'text-zinc-500'}`}>{l}</button>)}</div>
+              <button onClick={()=>setNt(!nt)} className="bg-accent text-ink font-bold rounded-lg px-3 py-1.5 text-sm whitespace-nowrap">+ New task</button>
+            </div>
+          </div>
+          {nt&&<form className="flex gap-2" onSubmit={e=>{e.preventDefault();const d=data.find(x=>x.id===+e.target.pj.value);addT(d,e.target.t.value);e.target.reset();setNt(false)}}><select name="pj">{live.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select><input name="t" placeholder="Task title" className="flex-1 min-w-0"/><button className="bg-accent text-ink rounded-lg px-3 text-sm">Add</button></form>}
+          <div className="flex gap-2 overflow-x-auto noscroll items-center">
+            <input placeholder="Search tasks" value={tq} onChange={e=>setTq(e.target.value)} className="w-36 shrink-0"/>
+            {chips.map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`shrink-0 rounded-full border px-3 py-1 text-xs ${vw===k?'bg-accent text-ink border-transparent':'border-zinc-500 text-zinc-300'}`}>{l}{k==='archived'?'':' '+cnt(k)}</button>)}
+            <select value={pj} onChange={e=>setPj(e.target.value)} className="shrink-0 w-36"><option value="">All projects</option>{data.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select>
+            <select value={pf} onChange={e=>setPf(e.target.value)} className="shrink-0 w-32"><option value="">Any priority</option>{Object.keys(PC).map(k=><option key={k} value={k}>{k}</option>)}</select>
+          </div>
+          {tv==='list'?(
+            <div className="space-y-2">
+              {groups.map(({d,ts})=>{const o=ex.includes(d.id)||tq||vw!=='all',dn=getT(d.id).filter(x=>x.s==='done').length
+                return <section key={d.id} className="rounded-2xl border border-line bg-panel">
+                  <button onClick={()=>setEx(e=>e.includes(d.id)?e.filter(i=>i!==d.id):[...e,d.id])} className="w-full flex items-center gap-3 p-3 text-left">
+                    <Av p={d} s={32}/>
+                    <span className="min-w-0 flex-1"><span className="block font-bold truncate">{d.n}</span><span className="block text-xs text-zinc-400 truncate">{d.c} · {dlText(d)}</span></span>
+                    <span className="w-20 shrink-0"><span className="block text-xs text-zinc-400 text-right mb-1">{dn}/{getT(d.id).length}</span><Bar v={pct(d.id)}/></span>
+                    <span className="text-zinc-500">{o?'▾':'▸'}</span>
+                  </button>
+                  {o&&<div className="border-t border-line p-3 space-y-2">
+                    {ts.map(x=><div key={x.id} className="flex items-center gap-2 text-sm"><input type="checkbox" className="accent-accent" checked={x.s==='done'} onChange={()=>move(d,x.i,x.s==='done'?'todo':'done')}/><span className={`flex-1 min-w-0 ${x.s==='done'?'line-through text-zinc-500':''}`}>{x.t}</span><select value={x.s} onChange={e=>move(d,x.i,e.target.value)} className="!py-0.5 !px-1 text-xs">{['todo','doing','done'].map(s=><option key={s}>{s}</option>)}</select></div>)}
+                    <form className="flex gap-2" onSubmit={e=>{e.preventDefault();addT(d,e.target.t.value);e.target.reset()}}><input name="t" placeholder="Add task" className="flex-1 min-w-0"/><button aria-label="Add task" className="bg-accent text-ink rounded-lg px-3"><Plus size={16}/></button></form>
+                  </div>}
+                </section>})}
+              {!groups.length&&<p className="text-sm text-zinc-500">No tasks match. Change the search or filters.</p>}
+            </div>
+          ):(
+            <>
+              <div className="flex md:hidden gap-2">{['todo','doing','done'].map(k=><button key={k} onClick={()=>setCol(k)} className={`flex-1 rounded-lg border py-2 text-sm ${col===k?'bg-accent text-ink font-bold border-transparent':'border-line text-zinc-400'}`}>{k} {vis.filter(x=>x.s===k).length}</button>)}</div>
+              <div className="grid md:grid-cols-3 gap-3">{['todo','doing','done'].map(k=>
+                <div key={k} onDragOver={e=>e.preventDefault()} onDrop={e=>{const [pid,i]=e.dataTransfer.getData('t').split(':');move(data.find(x=>x.id===+pid),+i,k)}} className={`min-w-0 space-y-2 min-h-24 max-h-[70vh] overflow-y-auto pr-1 ${k===col?'':'hidden md:block'}`}>
+                  <div className="text-sm py-1 hidden md:block sticky top-0 bg-ink z-[1]"><span className={`inline-block w-2 h-2 rounded-full mr-2 ${k==='todo'?'bg-zinc-400':k==='doing'?'bg-amber-400':'bg-accent'}`}/>{k} <span className="text-zinc-500">{vis.filter(x=>x.s===k).length}</span></div>
+                  {vis.filter(x=>x.s===k).map(x=><div key={x.id} draggable onDragStart={e=>e.dataTransfer.setData('t',x.p.id+':'+x.i)} className="rounded-lg border border-line bg-panel p-2 space-y-1 cursor-grab pop">
+                    <button onClick={()=>setOpen(x.p.id)} className="text-left text-sm leading-snug"><span className={`${PC[prio(x.p)]} mr-1`}>●</span>{x.t}</button>
+                    <div className="flex justify-between items-center gap-2 text-xs text-zinc-500"><span className="truncate">{x.p.n}</span><select value={x.s} onChange={e=>move(x.p,x.i,e.target.value)} className="!py-0.5 !px-1 text-xs shrink-0">{['todo','doing','done'].map(s=><option key={s}>{s}</option>)}</select></div>
+                  </div>)}
+                  {!vis.some(x=>x.s===k)&&<p className="text-xs text-zinc-600 px-1">Empty</p>}
+                </div>)}</div>
+            </>
+          )}
+        </div>)})()}
+
+      {view==='cal'&&<>
+        <div className="flex items-center justify-between flex-wrap gap-2"><h1 className="hidden md:block text-2xl font-bold">Deadline Calendar</h1>
+          <button onClick={remind} className="flex gap-2 items-center text-sm border border-line rounded-lg px-3 py-2"><Bell size={14}/>Enable reminders</button></div>
+        <div className="flex items-center gap-3"><button onClick={()=>setMo(mo-1)}>←</button><b>{first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button onClick={()=>setMo(mo+1)}>→</button></div>
+        <div className="grid grid-cols-7 gap-1 text-xs">
+          {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><div key={d} className="text-zinc-500 text-center">{d}</div>)}
+          {Array.from({length:pad}).map((_,i)=><div key={'p'+i}/>)}
+          {Array.from({length:dim},(_,i)=>{const d=new Date(first.getFullYear(),first.getMonth(),i+1),ps=data.filter(p=>same(at(p.dl),d)),wk=d>=t0()&&d<at(7)
+            return <div key={i} className={`min-h-16 rounded-lg p-1 border ${same(d,t0())?'border-accent':'border-line'} ${wk?'bg-panel':''}`}><div>{i+1}</div>{ps.map(p=><button key={p.id} onClick={()=>setOpen(p.id)} className={`block w-full truncate text-left rounded px-1 mt-0.5 ${p.dl<0?'bg-red-400/20 text-red-300':'bg-accent/20 text-accent'}`}>{p.n}</button>)}</div>})}
+        </div>
+        <section className="bg-panel border border-line rounded-xl p-4 space-y-1"><h2 className="font-bold">This week</h2>
+          {live.filter(p=>p.dl>=0&&p.dl<7).map(p=><div key={p.id} className="text-sm flex justify-between"><span>{p.n}</span><span>{p.dl===0?'Today':fmt(at(p.dl))}</span></div>)}</section>
+        <section className="bg-panel border border-line rounded-xl p-4 space-y-1"><h2 className="font-bold text-red-400">Overdue</h2>
+          {overdue.length?overdue.map(p=><div key={p.id} className="text-sm">{p.n}: {dlText(p)}, tasks unfinished</div>):<div className="text-sm text-zinc-500">No overdue tasks.</div>}</section>
+      </>}
+
+      {view==='watch'&&<>
+        <h1 className="hidden md:block text-2xl font-bold">Watchlist</h1>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">{data.filter(p=>w[p.id]?.fav).map(p=><div key={p.id}>{Card({p})}<div className="text-xs text-zinc-400 mt-1 px-1">Priority {prio(p)}{w[p.id]?.note?' · '+w[p.id].note.slice(0,60):''}{w[p.id]?.wallet?' · Wallet: '+w[p.id].wallet:''}</div></div>)}</div>
+        {!data.some(p=>w[p.id]?.fav)&&<p className="text-zinc-500">Your watchlist is empty. Star a project in Explore to save it.</p>}
+      </>}
+    </main>
+
+    {p&&<div className="fixed inset-0 bg-black/60 z-10 flex justify-end fade-in" onClick={()=>setOpen(null)}>
+      <aside className="w-full max-w-md bg-panel border-l border-line p-5 overflow-y-auto space-y-4 slide-in" onClick={e=>e.stopPropagation()}>
+        <div className="flex justify-between items-start"><div className="flex items-center gap-3"><Av p={p} s={44}/><div><h2 className="text-2xl font-bold">{p.n}</h2><div className="text-sm text-zinc-400">{p.c} · {p.k} · {p.s}</div></div></div><button aria-label="Close" onClick={()=>setOpen(null)}><X/></button></div>
+        <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-400">Last verified {fmt(at(-p.v))}</span></div>
+        <p className="text-sm whitespace-pre-line">{p.r}</p>
+        <p className="text-xs text-zinc-400">There is no guarantee this project will give an airdrop.</p>
+        {p.f&&<div className="flex gap-2 text-sm text-red-300 bg-red-400/10 rounded-lg p-3"><ShieldAlert size={18} className="shrink-0"/>{p.f}</div>}
+        <div className="flex gap-4 text-sm text-accent"><a href={p.w} target="_blank" rel="noreferrer" className="flex gap-1 items-center">Website <ExternalLink size={12}/></a><a href={p.x} target="_blank" rel="noreferrer" className="flex gap-1 items-center">X account <ExternalLink size={12}/></a></div>
+        <h3 className="font-bold">Checklist · {pct(p.id)}%</h3>{check(p)}
+        <h3 className="font-bold">Personal notes</h3>
+        <div className="flex gap-2 items-center"><button onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})} className="flex gap-1 items-center text-sm"><Star size={16} className={w[p.id]?.fav?'fill-accent text-accent star-on':''}/>Favorite</button>
+          <select value={prio(p)} onChange={e=>setWp(p.id,{prio:e.target.value})}>{Object.keys(PR).map(x=><option key={x}>{x}</option>)}</select></div>
+        <textarea className="w-full" rows={3} placeholder="Notes" value={w[p.id]?.note||''} onChange={e=>setWp(p.id,{note:e.target.value})}/>
+        <input className="w-full" placeholder="Wallet label (e.g. Main wallet)" value={w[p.id]?.wallet||''} onChange={e=>setWp(p.id,{wallet:e.target.value})}/>
+        <p className="text-xs text-amber-300">Label only. Never enter a seed phrase, private key, or full address.</p>
+        {p.id>=100&&<button onClick={()=>{if(confirm('Delete this project?')){setCustom(c=>c.filter(x=>x.id!==p.id));setOpen(null)}}} className="text-xs text-red-400 border border-red-400/40 rounded-lg px-3 py-1.5">Delete project</button>}
+      </aside>
+    </div>}
+  </div>)
+}
