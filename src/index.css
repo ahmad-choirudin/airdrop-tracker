@@ -50,6 +50,7 @@ html.light{
   --scheme:light;
 }
 html{color-scheme:var(--scheme)}
+*{scrollbar-width:thin;scrollbar-color:rgb(var(--fg-5)) transparent}
 
 body{
   background:
