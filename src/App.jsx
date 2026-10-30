@@ -52,7 +52,7 @@ function Mascot(){
     </button>)
 }
 const Sp=({s=16,style})=><svg aria-hidden="true" viewBox="0 0 24 24" width={s} height={s} className="spark" style={style}><path d="M12 0C12.8 7 17 11.2 24 12C17 12.8 12.8 17 12 24C11.2 17 7 12.8 0 12C7 11.2 11.2 7 12 0Z" fill="currentColor"/></svg>
-const Av=({p,s=32})=>{const l=logoFor(p.n);return l?<img src={l} alt="" width={s} height={s} className="rounded-full object-cover shrink-0" style={{width:s,height:s}}/>:<span className="rounded-full border border-zinc-600 grid place-items-center font-bold text-accent shrink-0" style={{width:s,height:s}}>{p.n[0]}</span>}
+const Av=({p,s=32})=>{const l=logoFor(p.n);return l?<img src={l} alt="" width={s} height={s} className="rounded-full object-cover shrink-0" style={{width:s,height:s}}/>:<span className="rounded-full border border-line grid place-items-center font-bold text-accent shrink-0" style={{width:s,height:s}}>{p.n[0]}</span>}
 export default function App(){
   const [view,setView]=useState('dash'),[open,setOpen]=useState(null),[mode,setMode]=useState('list'),[mo,setMo]=useState(0)
   const [menu,setMenu]=useState(false)
@@ -191,7 +191,7 @@ export default function App(){
       {view==='explore'&&<>
         <section className="hero relative overflow-hidden rounded-3xl border border-line p-6 md:p-10">
           <div className="relative z-[1] max-w-md">
-            <h1 className="serif text-4xl md:text-6xl leading-[1.05]">All airdrops<br/>in one place</h1>
+            <h1 className="serif text-4xl md:text-6xl leading-[1.05]">All airdrops<br/><span className="text-accent">in one place</span></h1>
             <p className="mt-3 text-sm text-zinc-400">Track deadlines, tasks and rewards for every project, with clear verification status. No promises, just the facts.</p>
           </div>
           <img src={logo} alt="" className="hero-logo"/>
