@@ -116,8 +116,8 @@ button:focus-visible,a:focus-visible{outline:2px solid rgb(var(--accent));outlin
   animation:heroFloat 6s ease-in-out infinite;
 }
 .brand-logo{filter:drop-shadow(0 0 8px rgb(var(--accent) / .5))}
-html.light .brand-logo{filter:invert(1)}
-html.light .hero-logo{filter:invert(1) drop-shadow(0 0 16px rgb(var(--accent) / .35))}
+html.light .brand-logo{filter:brightness(.5)}
+html.light .hero-logo{filter:brightness(.5) drop-shadow(0 0 16px rgb(var(--accent) / .3))}
 .spark{position:absolute;color:rgb(var(--accent));animation:twinkle 3s ease-in-out infinite}
 @media(max-width:640px){.hero-logo{opacity:.2;right:-12px}}
 
