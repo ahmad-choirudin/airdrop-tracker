@@ -22,7 +22,9 @@ export default {
       colors: {
         ink: c('bg'),
         panel: c('surface-1'),
-        line: c('border'),
+        line: 'var(--line)',
+        base: c('bg-2'),
+        elevated: c('surface-2'),
         accent: c('accent'),
         white: c('fg'),
         zinc: {
