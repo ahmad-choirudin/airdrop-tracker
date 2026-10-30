@@ -197,10 +197,10 @@ export default function App(){
           <img src={logo} alt="" className="hero-logo"/>
           <Sp s={22} style={{right:'38%',top:'18%'}}/><Sp s={14} style={{right:'14%',top:'12%',animationDelay:'1s'}}/><Sp s={18} style={{right:'8%',bottom:'16%',animationDelay:'2s'}}/>
         </section>
-        <div className="flex gap-2 text-sm">{[['Active','Active'],['Upcoming','Upcoming'],['Ended','Closed'],['All','All']].map(([k,l])=><button key={k} onClick={()=>setSt(k)} className={`rounded-lg px-4 py-1.5 border ${st===k?'bg-accent/10 border-accent/40 text-accent':'border-transparent text-zinc-500'}`}>{l}</button>)}</div>
+        <div className="flex gap-2 text-sm">{[['Active','Active'],['Upcoming','Upcoming'],['Ended','Closed'],['All','All']].map(([k,l])=><button key={k} onClick={()=>setSt(k)} className={`rounded-lg px-4 py-1.5 border ${st===k?'bg-accent/10 border-accent/40 text-accent':'border-transparent text-zinc-500 hover:text-zinc-300'}`}>{l}</button>)}</div>
         <div className="flex flex-wrap justify-between gap-4 items-end">
           <div><h2 className="text-2xl md:text-3xl holo-text">Explore the ecosystem</h2></div>
-          <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Add it to your own tracker (saved in this browser only).</span><button onClick={()=>setSub(!sub)} className="rounded-full border border-zinc-300 text-zinc-100 px-5 py-2 text-sm whitespace-nowrap">Add Project</button></div>
+          <div className="flex items-center gap-4 max-w-sm text-xs text-zinc-400"><span>Don’t see your project listed? Add it to your own tracker (saved in this browser only).</span><button onClick={()=>setSub(!sub)} className="rounded-full border border-line text-white px-5 py-2 text-sm whitespace-nowrap hover:border-accent/50 hover:bg-white/5">Add Project</button></div>
         </div>
         {sub&&<form className="rounded-2xl border border-line bg-panel p-4 grid sm:grid-cols-2 gap-2 text-sm" onSubmit={e=>{e.preventDefault()
           const f=e.target.elements,v=n=>f[n].value.trim()
@@ -218,7 +218,7 @@ export default function App(){
           <input name="pw" placeholder="Official website (https://...)"/>
           <input name="px" placeholder="X link (https://...)"/>
           <input name="pnote" className="sm:col-span-2" placeholder="Short note"/>
-          <button className="sm:col-span-2 bg-accent text-ink font-bold rounded-lg py-2">Save project</button>
+          <button className="sm:col-span-2 bg-accent text-ink font-semibold rounded-lg py-2 hover:brightness-110">Save project</button>
         </form>}
         {(()=>{
           const act=live.filter(x=>x.dl>=0),nxt=act.find(x=>x.dl<9999)
@@ -227,34 +227,34 @@ export default function App(){
           return(
           <div className="grid md:grid-cols-3 gap-3 stagger">
             <section className="rounded-2xl border border-line bg-panel p-4">
-              <h2 className="text-sm font-bold mb-3">Current Activity Overview</h2>
-              <div className="grid grid-cols-2 gap-3">{stat.map(([l,n,c])=><div key={l} className={`border-l-2 ${c} pl-3`}><div className="text-2xl font-bold">{n}</div><div className="text-xs text-zinc-400">{l}</div></div>)}</div>
+              <h2 className="text-sm font-semibold text-white mb-3">Current Activity Overview</h2>
+              <div className="grid grid-cols-2 gap-3">{stat.map(([l,n,c])=><div key={l} className={`border-l-2 ${c} pl-3`}><div className="text-2xl font-mono font-medium text-white">{n}</div><div className="text-xs text-zinc-400">{l}</div></div>)}</div>
             </section>
             <section className="rounded-2xl border border-line bg-panel p-4 flex flex-col">
-              <h2 className="text-sm font-bold mb-3">Next Reward</h2>
+              <h2 className="text-sm font-semibold text-white mb-3">Next Reward</h2>
               {nxt?<>
-                <div className="flex-1"><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-bold">{nxt.n}</div><div className="text-sm text-zinc-300">{dlText(nxt)} · {fmt(at(nxt.dl))}</div></div>
-                <button onClick={()=>setOpen(nxt.id)} className="mt-3 self-start text-xs rounded-full border border-accent text-accent px-3 py-1">Open details</button>
+                <div className="flex-1"><div className="text-xs text-zinc-400">Nearest deadline</div><div className="text-2xl font-semibold tracking-tight text-white">{nxt.n}</div><div className="text-sm text-zinc-300">{dlText(nxt)} · {fmt(at(nxt.dl))}</div></div>
+                <button onClick={()=>setOpen(nxt.id)} className="mt-3 self-start text-xs rounded-full border border-accent text-accent px-3 py-1 hover:bg-accent/10">Open details</button>
               </>:<p className="text-sm text-zinc-500">No upcoming deadlines.</p>}
             </section>
             <section className="rounded-2xl border border-line bg-panel p-4">
-              <h2 className="text-sm font-bold mb-3">Hot events</h2>
-              <div className="space-y-2">{hot.map(h=><button key={h.id} onClick={()=>setOpen(h.id)} className="w-full text-left rounded-xl border border-line p-2.5 flex items-center gap-3 hover:bg-white/5"><Av p={h} s={32}/><span className="min-w-0"><span className="block text-sm font-bold truncate">{h.n}</span><span className="block text-xs text-zinc-400 truncate">{h.c} · {dlText(h)}</span></span></button>)}
+              <h2 className="text-sm font-semibold text-white mb-3">Hot events</h2>
+              <div className="space-y-2">{hot.map(h=><button key={h.id} onClick={()=>setOpen(h.id)} className="w-full text-left rounded-xl border border-line p-2.5 flex items-center gap-3 hover:bg-white/5"><Av p={h} s={32}/><span className="min-w-0"><span className="block text-sm font-semibold text-white truncate">{h.n}</span><span className="block text-xs text-zinc-400 truncate">{h.c} · {dlText(h)}</span></span></button>)}
                 {!hot.length&&<p className="text-sm text-zinc-500">Nothing hot right now.</p>}</div>
             </section>
           </div>)
         })()}
         <div className="flex flex-wrap gap-2 items-center">
           {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink font-medium border-transparent':'border-line text-zinc-400 hover:border-accent/40 hover:text-white'}`}>{c}</button>)}
-          <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
+          <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 focus-within:border-accent/60 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
           <select value={chain} onChange={e=>setChain(e.target.value)}>{chains.map(c=><option key={c}>{c}</option>)}</select>
           <select value={tk} onChange={e=>setTk(e.target.value)}><option value="">Task Type</option>{taskTypes.map(c=><option key={c}>{c}</option>)}</select>
           <select value={st} onChange={e=>setSt(e.target.value)}>{['All','Active','Upcoming','Ended'].map(c=><option key={c} value={c}>{c==='All'?'Status':c}</option>)}</select>
           <select value={sort} onChange={e=>setSort(e.target.value)}><option value="dl">Sort: Deadline</option><option value="ad">Sort: Date added</option><option value="pr">Sort: Priority</option></select>
-          <button aria-label="Grid" onClick={()=>setMode('grid')} className={mode==='grid'?'text-accent':'text-zinc-500'}><LayoutGrid size={20}/></button>
-          <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500'}><List size={20}/></button>
+          <button aria-label="Grid" onClick={()=>setMode('grid')} className={mode==='grid'?'text-accent':'text-zinc-500 hover:text-zinc-300'}><LayoutGrid size={20}/></button>
+          <button aria-label="List" onClick={()=>setMode('list')} className={mode==='list'?'text-accent':'text-zinc-500 hover:text-zinc-300'}><List size={20}/></button>
         </div>
 
         <div className="md:hidden space-y-3">
@@ -265,12 +265,12 @@ export default function App(){
         <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] uppercase tracking-wider text-zinc-300">{d.s}</span>
       </div>
       <div className="p-4 space-y-2">
-        <div className="flex items-center gap-2"><Av p={d} s={28}/><h3 className="text-lg font-bold">{d.n}</h3></div>
+        <div className="flex items-center gap-2"><Av p={d} s={28}/><h3 className="text-lg font-semibold tracking-tight text-white">{d.n}</h3></div>
         <p className="text-sm text-zinc-400">{d.c} · {d.reward} · {dlText(d)}</p>
-        <div className="flex items-center gap-3"><div className="flex-1"><Bar v={pct(d.id)}/></div><span className="text-xs text-zinc-500">{pct(d.id)}%</span></div>
+        <div className="flex items-center gap-3"><div className="flex-1"><Bar v={pct(d.id)}/></div><span className="text-xs font-mono text-zinc-500">{pct(d.id)}%</span></div>
         <div className="flex items-center justify-between pt-1">
           <button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={20} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button>
-          <button onClick={()=>setOpen(d.id)} className="rounded-lg border border-line px-4 py-2 text-sm font-medium">View details</button>
+          <button onClick={()=>setOpen(d.id)} className="rounded-lg border border-line px-4 py-2 text-sm font-medium hover:border-accent/50 hover:bg-white/5">View details</button>
         </div>
       </div>
     </div>))}
@@ -280,18 +280,18 @@ export default function App(){
   ?<div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-3 stagger">{list.map(d=><Fragment key={d.id}>{Card({p:d})}</Fragment>)}</div>
   :<div className="hidden md:block rounded-2xl border border-line bg-panel overflow-x-auto">
     <table className="w-full min-w-[900px] text-sm">
-      <thead><tr className="text-left text-xs text-zinc-500 border-b border-line">
+      <thead><tr className="text-left text-[11px] uppercase tracking-wider text-zinc-500 border-b border-line">
         <th className="p-3 font-medium">Name</th><th className="p-3 font-medium">Chain · Category</th><th className="p-3 font-medium">Task Type</th><th className="p-3 font-medium">Status</th><th className="p-3 font-medium">Reward</th><th className="p-3 font-medium">Deadline</th><th className="p-3 font-medium">Progress</th><th className="p-3 w-10"></th>
       </tr></thead>
       <tbody>{list.map(d=>(
         <tr key={d.id} onClick={()=>setOpen(d.id)} className="border-b border-line last:border-0 hover:bg-white/5 cursor-pointer">
-          <td className="p-3"><div className="flex items-center gap-3"><Av p={d} s={32}/><span className="font-bold">{d.n}</span></div></td>
+          <td className="p-3"><div className="flex items-center gap-3"><Av p={d} s={32}/><span className="font-semibold text-white">{d.n}</span></div></td>
           <td className="p-3 whitespace-nowrap"><span className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{d.c}</span> <span className="rounded bg-accent/15 text-accent px-2 py-0.5 text-xs">{d.k}</span></td>
           <td className="p-3"><div className="flex gap-1 flex-wrap">{(d.task||'').split(', ').filter(Boolean).map(t=><span key={t} className="rounded bg-white/10 text-zinc-300 px-2 py-0.5 text-xs">{t}</span>)}</div></td>
           <td className="p-3"><Badge i={d.i}/><div className="text-xs text-zinc-500 mt-1">{d.s}</div></td>
           <td className="p-3 whitespace-nowrap">{d.reward}</td>
           <td className="p-3 whitespace-nowrap">{dlText(d)}<div className="text-xs text-zinc-500">{d.s!=='Ended'&&d.dl<9999&&fmt(at(d.dl))}</div></td>
-          <td className="p-3 w-32"><Bar v={pct(d.id)}/><div className="text-xs text-zinc-500 mt-1">{pct(d.id)}%</div></td>
+          <td className="p-3 w-32"><Bar v={pct(d.id)}/><div className="text-xs font-mono text-zinc-500 mt-1">{pct(d.id)}%</div></td>
           <td className="p-3" onClick={e=>e.stopPropagation()}><button aria-label="Favorite" onClick={()=>setWp(d.id,{fav:!w[d.id]?.fav})}><Star size={18} className={w[d.id]?.fav?'fill-accent text-accent':'text-zinc-500'}/></button></td>
         </tr>))}</tbody>
     </table>
@@ -376,20 +376,20 @@ export default function App(){
 
     {p&&<div className="fixed inset-0 bg-black/60 z-10 flex justify-end fade-in" onClick={()=>setOpen(null)}>
       <aside className="w-full max-w-md bg-panel border-l border-line p-5 overflow-y-auto space-y-4 slide-in" onClick={e=>e.stopPropagation()}>
-        <div className="flex justify-between items-start"><div className="flex items-center gap-3"><Av p={p} s={44}/><div><h2 className="text-2xl font-bold">{p.n}</h2><div className="text-sm text-zinc-400">{p.c} · {p.k} · {p.s}</div></div></div><button aria-label="Close" onClick={()=>setOpen(null)}><X/></button></div>
+        <div className="flex justify-between items-start"><div className="flex items-center gap-3"><Av p={p} s={44}/><div><h2 className="text-2xl font-semibold tracking-tight text-white">{p.n}</h2><div className="text-sm text-zinc-400">{p.c} · {p.k} · {p.s}</div></div></div><button aria-label="Close" onClick={()=>setOpen(null)} className="rounded-lg p-1 text-zinc-400 hover:text-white hover:bg-white/5"><X/></button></div>
         <div className="flex items-center gap-2 flex-wrap"><Badge i={p.i}/><span className="text-xs text-zinc-400">Last verified {fmt(at(-p.v))}</span></div>
-        <p className="text-sm whitespace-pre-line">{p.r}</p>
+        <p className="text-sm text-zinc-300 whitespace-pre-line">{p.r}</p>
         <p className="text-xs text-zinc-400">There is no guarantee this project will give an airdrop.</p>
-        {p.f&&<div className="flex gap-2 text-sm text-red-300 bg-red-400/10 rounded-lg p-3"><ShieldAlert size={18} className="shrink-0"/>{p.f}</div>}
-        <div className="flex gap-4 text-sm text-accent"><a href={p.w} target="_blank" rel="noreferrer" className="flex gap-1 items-center">Website <ExternalLink size={12}/></a><a href={p.x} target="_blank" rel="noreferrer" className="flex gap-1 items-center">X account <ExternalLink size={12}/></a></div>
-        <h3 className="font-bold">Checklist · {pct(p.id)}%</h3>{check(p)}
-        <h3 className="font-bold">Personal notes</h3>
-        <div className="flex gap-2 items-center"><button onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})} className="flex gap-1 items-center text-sm"><Star size={16} className={w[p.id]?.fav?'fill-accent text-accent star-on':''}/>Favorite</button>
+        {p.f&&<div className="flex gap-2 text-sm text-red-300 bg-red-400/10 border border-red-400/30 rounded-xl p-3"><ShieldAlert size={18} className="shrink-0"/>{p.f}</div>}
+        <div className="flex gap-4 text-sm text-accent [&>a:hover]:underline underline-offset-4"><a href={p.w} target="_blank" rel="noreferrer" className="flex gap-1 items-center">Website <ExternalLink size={12}/></a><a href={p.x} target="_blank" rel="noreferrer" className="flex gap-1 items-center">X account <ExternalLink size={12}/></a></div>
+        <h3 className="text-sm font-semibold text-white">Checklist · {pct(p.id)}%</h3>{check(p)}
+        <h3 className="text-sm font-semibold text-white">Personal notes</h3>
+        <div className="flex gap-2 items-center"><button onClick={()=>setWp(p.id,{fav:!w[p.id]?.fav})} className="flex gap-1 items-center text-sm text-zinc-300 hover:text-white"><Star size={16} className={w[p.id]?.fav?'fill-accent text-accent star-on':''}/>Favorite</button>
           <select value={prio(p)} onChange={e=>setWp(p.id,{prio:e.target.value})}>{Object.keys(PR).map(x=><option key={x}>{x}</option>)}</select></div>
         <textarea className="w-full" rows={3} placeholder="Notes" value={w[p.id]?.note||''} onChange={e=>setWp(p.id,{note:e.target.value})}/>
         <input className="w-full" placeholder="Wallet label (e.g. Main wallet)" value={w[p.id]?.wallet||''} onChange={e=>setWp(p.id,{wallet:e.target.value})}/>
         <p className="text-xs text-amber-300">Label only. Never enter a seed phrase, private key, or full address.</p>
-        {p.id>=100&&<button onClick={()=>{if(confirm('Delete this project?')){setCustom(c=>c.filter(x=>x.id!==p.id));setOpen(null)}}} className="text-xs text-red-400 border border-red-400/40 rounded-lg px-3 py-1.5">Delete project</button>}
+        {p.id>=100&&<button onClick={()=>{if(confirm('Delete this project?')){setCustom(c=>c.filter(x=>x.id!==p.id));setOpen(null)}}} className="text-xs text-red-400 border border-red-400/40 rounded-lg px-3 py-1.5 hover:bg-red-400/10">Delete project</button>}
       </aside>
     </div>}
   </div>)
