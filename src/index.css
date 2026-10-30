@@ -66,7 +66,8 @@ html.light body{background:rgb(var(--bg))}
 
 h1,h2,.serif{font-weight:600;letter-spacing:-.03em}
 h1{letter-spacing:-.04em}
-.text-5xl,.font-mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.font-mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.text-4xl.font-mono,.text-2xl.font-mono{letter-spacing:-.04em}
 
 input,select,textarea{
   background:rgb(var(--field));
