@@ -245,7 +245,7 @@ export default function App(){
           </div>)
         })()}
         <div className="flex flex-wrap gap-2 items-center">
-          {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink border-transparent':'border-zinc-500'}`}>{c}</button>)}
+          {['All','New','Popular',...cats.slice(1)].map(c=><button key={c} onClick={()=>setCat(c)} className={`rounded-full border px-4 py-1 text-xs ${cat===c?'bg-accent text-ink font-medium border-transparent':'border-line text-zinc-400 hover:border-accent/40 hover:text-white'}`}>{c}</button>)}
           <div className="ml-auto flex items-center rounded-full bg-white/10 border border-white/15 pl-4 pr-1 py-1"><input className="!bg-transparent !border-0 !text-white text-sm w-40 !p-1" placeholder="Search projects" value={q} onChange={e=>setQ(e.target.value)}/><Search size={16} className="mx-2 text-zinc-400"/></div>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
@@ -314,17 +314,17 @@ export default function App(){
           {nt&&<form className="flex gap-2" onSubmit={e=>{e.preventDefault();const d=data.find(x=>x.id===+e.target.pj.value);addT(d,e.target.t.value);e.target.reset();setNt(false)}}><select name="pj">{live.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select><input name="t" placeholder="Task title" className="flex-1 min-w-0"/><button className="bg-accent text-ink rounded-lg px-3 text-sm">Add</button></form>}
           <div className="flex gap-2 overflow-x-auto noscroll items-center">
             <input placeholder="Search tasks" value={tq} onChange={e=>setTq(e.target.value)} className="w-36 shrink-0"/>
-            {chips.map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`shrink-0 rounded-full border px-3 py-1 text-xs ${vw===k?'bg-accent text-ink border-transparent':'border-zinc-500 text-zinc-300'}`}>{l}{k==='archived'?'':' '+cnt(k)}</button>)}
+            {chips.map(([k,l])=><button key={k} onClick={()=>setVw(k)} className={`shrink-0 rounded-full border px-3 py-1 text-xs ${vw===k?'bg-accent text-ink font-medium border-transparent':'border-line text-zinc-400 hover:border-accent/40 hover:text-white'}`}>{l}{k==='archived'?'':' '+cnt(k)}</button>)}
             <select value={pj} onChange={e=>setPj(e.target.value)} className="shrink-0 w-36"><option value="">All projects</option>{data.map(d=><option key={d.id} value={d.id}>{d.n}</option>)}</select>
             <select value={pf} onChange={e=>setPf(e.target.value)} className="shrink-0 w-32"><option value="">Any priority</option>{Object.keys(PC).map(k=><option key={k} value={k}>{k}</option>)}</select>
           </div>
           {tv==='list'?(
             <div className="space-y-2">
               {groups.map(({d,ts})=>{const o=ex.includes(d.id)||tq||vw!=='all',dn=getT(d.id).filter(x=>x.s==='done').length
-                return <section key={d.id} className="rounded-2xl border border-line bg-panel">
-                  <button onClick={()=>setEx(e=>e.includes(d.id)?e.filter(i=>i!==d.id):[...e,d.id])} className="w-full flex items-center gap-3 p-3 text-left">
+                return <section key={d.id} className="rounded-2xl border border-line bg-panel overflow-hidden">
+                  <button onClick={()=>setEx(e=>e.includes(d.id)?e.filter(i=>i!==d.id):[...e,d.id])} className="w-full flex items-center gap-3 p-3 text-left hover:bg-white/5">
                     <Av p={d} s={32}/>
-                    <span className="min-w-0 flex-1"><span className="block font-bold truncate">{d.n}</span><span className="block text-xs text-zinc-400 truncate">{d.c} · {dlText(d)}</span></span>
+                    <span className="min-w-0 flex-1"><span className="block font-semibold text-white truncate">{d.n}</span><span className="block text-xs text-zinc-400 truncate">{d.c} · {dlText(d)}</span></span>
                     <span className="w-20 shrink-0"><span className="block text-xs text-zinc-400 text-right mb-1">{dn}/{getT(d.id).length}</span><Bar v={pct(d.id)}/></span>
                     <span className="text-zinc-500">{o?'▾':'▸'}</span>
                   </button>
@@ -337,15 +337,15 @@ export default function App(){
             </div>
           ):(
             <>
-              <div className="flex md:hidden gap-2">{['todo','doing','done'].map(k=><button key={k} onClick={()=>setCol(k)} className={`flex-1 rounded-lg border py-2 text-sm ${col===k?'bg-accent text-ink font-bold border-transparent':'border-line text-zinc-400'}`}>{k} {vis.filter(x=>x.s===k).length}</button>)}</div>
+              <div className="flex md:hidden gap-2">{['todo','doing','done'].map(k=><button key={k} onClick={()=>setCol(k)} className={`flex-1 rounded-lg border py-2 text-sm ${col===k?'bg-accent text-ink font-semibold border-transparent':'border-line text-zinc-400'}`}>{k} {vis.filter(x=>x.s===k).length}</button>)}</div>
               <div className="grid md:grid-cols-3 gap-3">{['todo','doing','done'].map(k=>
                 <div key={k} onDragOver={e=>e.preventDefault()} onDrop={e=>{const [pid,i]=e.dataTransfer.getData('t').split(':');move(data.find(x=>x.id===+pid),+i,k)}} className={`min-w-0 space-y-2 min-h-24 max-h-[70vh] overflow-y-auto pr-1 ${k===col?'':'hidden md:block'}`}>
-                  <div className="text-sm py-1 hidden md:block sticky top-0 bg-ink z-[1]"><span className={`inline-block w-2 h-2 rounded-full mr-2 ${k==='todo'?'bg-zinc-400':k==='doing'?'bg-amber-400':'bg-accent'}`}/>{k} <span className="text-zinc-500">{vis.filter(x=>x.s===k).length}</span></div>
-                  {vis.filter(x=>x.s===k).map(x=><div key={x.id} draggable onDragStart={e=>e.dataTransfer.setData('t',x.p.id+':'+x.i)} className="rounded-lg border border-line bg-panel p-2 space-y-1 cursor-grab pop">
+                  <div className="text-sm font-medium capitalize text-white py-1 hidden md:block sticky top-0 bg-ink z-[1]"><span className={`inline-block w-2 h-2 rounded-full mr-2 ${k==='todo'?'bg-zinc-400':k==='doing'?'bg-amber-400':'bg-accent'}`}/>{k} <span className="text-zinc-500 font-mono text-xs">{vis.filter(x=>x.s===k).length}</span></div>
+                  {vis.filter(x=>x.s===k).map(x=><div key={x.id} draggable onDragStart={e=>e.dataTransfer.setData('t',x.p.id+':'+x.i)} className="rounded-xl border border-line bg-panel p-3 space-y-1.5 cursor-grab pop hover:border-accent/40 transition-colors">
                     <button onClick={()=>setOpen(x.p.id)} className="text-left text-sm leading-snug"><span className={`${PC[prio(x.p)]} mr-1`}>●</span>{x.t}</button>
                     <div className="flex justify-between items-center gap-2 text-xs text-zinc-500"><span className="truncate">{x.p.n}</span><select value={x.s} onChange={e=>move(x.p,x.i,e.target.value)} className="!py-0.5 !px-1 text-xs shrink-0">{['todo','doing','done'].map(s=><option key={s}>{s}</option>)}</select></div>
                   </div>)}
-                  {!vis.some(x=>x.s===k)&&<p className="text-xs text-zinc-600 px-1">Empty</p>}
+                  {!vis.some(x=>x.s===k)&&<p className="text-xs text-zinc-500 px-1">Empty</p>}
                 </div>)}</div>
             </>
           )}
@@ -353,17 +353,17 @@ export default function App(){
 
       {view==='cal'&&<>
         <div className="flex items-center justify-between flex-wrap gap-2"><h1 className="hidden md:block text-2xl font-bold">Deadline Calendar</h1>
-          <button onClick={remind} className="flex gap-2 items-center text-sm border border-line rounded-lg px-3 py-2"><Bell size={14}/>Enable reminders</button></div>
-        <div className="flex items-center gap-3"><button onClick={()=>setMo(mo-1)}>←</button><b>{first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button onClick={()=>setMo(mo+1)}>→</button></div>
+          <button onClick={remind} className="flex gap-2 items-center text-sm border border-line rounded-lg px-3 py-2 hover:border-accent/50 hover:bg-white/5"><Bell size={14}/>Enable reminders</button></div>
+        <div className="flex items-center gap-3"><button aria-label="Previous month" onClick={()=>setMo(mo-1)} className="grid h-8 w-8 place-items-center rounded-lg border border-line text-zinc-400 hover:border-accent/50 hover:text-white">←</button><b className="min-w-36 text-center font-semibold text-white tracking-tight">{first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button aria-label="Next month" onClick={()=>setMo(mo+1)} className="grid h-8 w-8 place-items-center rounded-lg border border-line text-zinc-400 hover:border-accent/50 hover:text-white">→</button></div>
         <div className="grid grid-cols-7 gap-1 text-xs">
-          {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><div key={d} className="text-zinc-500 text-center">{d}</div>)}
+          {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><div key={d} className="text-zinc-500 text-center text-[11px] uppercase tracking-wider">{d}</div>)}
           {Array.from({length:pad}).map((_,i)=><div key={'p'+i}/>)}
           {Array.from({length:dim},(_,i)=>{const d=new Date(first.getFullYear(),first.getMonth(),i+1),ps=data.filter(p=>same(at(p.dl),d)),wk=d>=t0()&&d<at(7)
-            return <div key={i} className={`min-h-16 rounded-lg p-1 border ${same(d,t0())?'border-accent':'border-line'} ${wk?'bg-panel':''}`}><div>{i+1}</div>{ps.map(p=><button key={p.id} onClick={()=>setOpen(p.id)} className={`block w-full truncate text-left rounded px-1 mt-0.5 ${p.dl<0?'bg-red-400/20 text-red-300':'bg-accent/20 text-accent'}`}>{p.n}</button>)}</div>})}
+            return <div key={i} className={`min-h-16 rounded-lg p-1.5 border ${same(d,t0())?'border-accent shadow-[0_0_0_1px_rgb(var(--accent)/.25)]':'border-line'} ${wk?'bg-panel':''}`}><div className={`text-xs font-mono ${same(d,t0())?'text-accent font-medium':'text-zinc-400'}`}>{i+1}</div>{ps.map(p=><button key={p.id} onClick={()=>setOpen(p.id)} className={`block w-full truncate text-left rounded px-1 mt-0.5 ${p.dl<0?'bg-red-400/20 text-red-300':'bg-accent/20 text-accent'}`}>{p.n}</button>)}</div>})}
         </div>
-        <section className="bg-panel border border-line rounded-xl p-4 space-y-1"><h2 className="font-bold">This week</h2>
-          {live.filter(p=>p.dl>=0&&p.dl<7).map(p=><div key={p.id} className="text-sm flex justify-between"><span>{p.n}</span><span>{p.dl===0?'Today':fmt(at(p.dl))}</span></div>)}</section>
-        <section className="bg-panel border border-line rounded-xl p-4 space-y-1"><h2 className="font-bold text-red-400">Overdue</h2>
+        <section className="bg-panel border border-line rounded-2xl p-4 space-y-1.5"><h2 className="text-sm font-semibold text-white">This week</h2>
+          {live.filter(p=>p.dl>=0&&p.dl<7).map(p=><div key={p.id} className="text-sm flex justify-between"><span>{p.n}</span><span className="text-xs font-mono text-zinc-400">{p.dl===0?'Today':fmt(at(p.dl))}</span></div>)}</section>
+        <section className="bg-panel border border-line rounded-2xl p-4 space-y-1.5"><h2 className="text-sm font-semibold text-red-400">Overdue</h2>
           {overdue.length?overdue.map(p=><div key={p.id} className="text-sm">{p.n}: {dlText(p)}, tasks unfinished</div>):<div className="text-sm text-zinc-500">No overdue tasks.</div>}</section>
       </>}
 
