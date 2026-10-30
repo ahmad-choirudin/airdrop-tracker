@@ -1,25 +1,28 @@
 @tailwind base;@tailwind components;@tailwind utilities;
 
 :root{
-  --bg:10 11 9;
-  --surface-1:17 19 16;
-  --surface-2:24 27 22;
-  --field:10 11 9;
-  --border:38 43 33;
+  --bg:9 11 10;
+  --bg-2:16 19 16;
+  --surface-1:20 24 20;
+  --surface-2:25 31 25;
+  --field:16 19 16;
+  --border:255 255 255;
+  --border-alpha:.08;
 
-  --fg:242 244 238;
-  --fg-2:201 205 193;
-  --fg-3:154 160 146;
-  --fg-4:123 130 115;
-  --fg-5:90 97 83;
+  --fg:245 247 242;
+  --fg-2:214 219 210;
+  --fg-3:146 154 144;
+  --fg-4:120 128 118;
+  --fg-5:84 91 82;
 
-  --accent:198 244 50;
+  --accent:196 245 106;
 
   --warning:251 191 36;  --warning-soft:252 211 77;
   --danger:248 113 113;  --danger-soft:252 165 165;
 
+  --line:rgb(var(--border) / var(--border-alpha));
   --tile:rgb(0 0 0 / .4);
-  --glow:0 0 0 1px rgb(var(--accent) / .08),0 0 32px -8px rgb(var(--accent) / .35);
+  --glow:0 0 0 1px rgb(var(--accent) / .10),0 0 24px -8px rgb(var(--accent) / .25);
   --ring:0 0 0 3px rgb(var(--accent) / .16);
   --scheme:dark;
 
@@ -28,10 +31,12 @@
 }
 html.light{
   --bg:246 247 242;
+  --bg-2:240 242 234;
   --surface-1:255 255 255;
-  --surface-2:240 242 234;
+  --surface-2:250 251 247;
   --field:255 255 255;
-  --border:222 226 214;
+  --border:17 20 14;
+  --border-alpha:.12;
 
   --fg:17 20 14;
   --fg-2:44 48 39;
@@ -53,15 +58,12 @@ html{color-scheme:var(--scheme)}
 *{scrollbar-width:thin;scrollbar-color:rgb(var(--fg-5)) transparent}
 
 body{
-  background:
-    radial-gradient(50rem 28rem at 85% -12%,rgb(var(--accent) / .07),transparent 60%),
-    rgb(var(--bg));
+  background:rgb(var(--bg));
   color:rgb(var(--fg-2));
   font:14px/1.5 Inter,system-ui,sans-serif;
   font-feature-settings:"cv11","ss03";
   -webkit-font-smoothing:antialiased;
 }
-html.light body{background:rgb(var(--bg))}
 ::selection{background:rgb(var(--accent) / .3)}
 
 h1,h2,.serif{font-weight:600;letter-spacing:-.03em}
@@ -72,7 +74,7 @@ h1{letter-spacing:-.04em}
 input,select,textarea{
   background:rgb(var(--field));
   color:inherit;
-  border:1px solid rgb(var(--border));
+  border:1px solid var(--line);
   border-radius:8px;
   padding:.5rem .75rem;
   font-size:.875rem;
@@ -92,14 +94,14 @@ button:focus-visible,a:focus-visible{outline:2px solid rgb(var(--accent));outlin
 
 .card-lift{
   background-color:rgb(var(--surface-1));
-  border-color:rgb(var(--border));
+  border-color:var(--line);
   transition:transform var(--dur) var(--ease),border-color var(--dur),box-shadow var(--dur);
 }
 .card-lift:hover{transform:translateY(-2px);border-color:rgb(var(--accent) / .55);box-shadow:var(--glow)}
 
 .holo-card{
   border:1px solid rgb(var(--accent) / .35);
-  background:radial-gradient(18rem 10rem at 100% 0%,rgb(var(--accent) / .10),transparent 70%),rgb(var(--surface-1));
+  background:rgb(var(--surface-1));
 }
 .glow{box-shadow:var(--glow)}
 .bg-black\/40{background-color:var(--tile)}
@@ -107,7 +109,7 @@ button:focus-visible,a:focus-visible{outline:2px solid rgb(var(--accent));outlin
 
 .hero{
   min-height:200px;
-  background:radial-gradient(30rem 16rem at 85% 45%,rgb(var(--accent) / .16),transparent 65%),rgb(var(--surface-1));
+  background:rgb(var(--bg-2));
 }
 .hero-logo{
   position:absolute;right:6%;top:50%;width:min(34vw,200px);
@@ -121,7 +123,7 @@ html.light .hero-logo{filter:brightness(.5) drop-shadow(0 0 16px rgb(var(--accen
 .spark{position:absolute;color:rgb(var(--accent));animation:twinkle 3s ease-in-out infinite}
 @media(max-width:640px){.hero-logo{opacity:.2;right:-12px}}
 
-svg.w-full line{stroke:rgb(var(--border))}
+svg.w-full line{stroke:var(--line)}
 svg.w-full text{fill:rgb(var(--fg-4))}
 svg.w-full circle.dot{stroke:rgb(var(--surface-1));stroke-width:2}
 svg path.draw{filter:drop-shadow(0 0 6px rgb(var(--accent) / .5))}
