@@ -1,40 +1,28 @@
 @tailwind base;@tailwind components;@tailwind utilities;
 
-/* =========================================================
-   DESIGN TOKENS
-   Warna ditulis sebagai channel "R G B" supaya Tailwind bisa
-   memakai opacity (bg-accent/10). Tema terang hanya mengganti
-   nilai variable di blok html.light, tidak ada override per-class.
-   ========================================================= */
 :root{
-  /* Surface */
   --bg:10 11 9;
   --surface-1:17 19 16;
   --surface-2:24 27 22;
   --field:10 11 9;
   --border:38 43 33;
 
-  /* Text (zinc-* di Tailwind dipetakan ke sini) */
   --fg:242 244 238;
   --fg-2:201 205 193;
   --fg-3:154 160 146;
   --fg-4:123 130 115;
   --fg-5:90 97 83;
 
-  /* Brand */
-  --accent:198 244 50;            /* lime */
+  --accent:198 244 50;
 
-  /* Status */
   --warning:251 191 36;  --warning-soft:252 211 77;
   --danger:248 113 113;  --danger-soft:252 165 165;
 
-  /* Efek */
   --tile:rgb(0 0 0 / .4);
   --glow:0 0 0 1px rgb(var(--accent) / .08),0 0 32px -8px rgb(var(--accent) / .35);
   --ring:0 0 0 3px rgb(var(--accent) / .16);
   --scheme:dark;
 
-  /* Motion */
   --ease:cubic-bezier(.2,.8,.2,1);
   --dur:150ms;
 }
@@ -51,7 +39,7 @@ html.light{
   --fg-4:106 112 100;
   --fg-5:166 171 157;
 
-  --accent:77 124 15;             /* lime pekat agar kontras di latar terang */
+  --accent:77 124 15;
 
   --warning:180 83 9;    --warning-soft:180 83 9;
   --danger:220 38 38;    --danger-soft:185 28 28;
@@ -63,9 +51,6 @@ html.light{
 }
 html{color-scheme:var(--scheme)}
 
-/* =========================================================
-   BASE
-   ========================================================= */
 body{
   background:
     radial-gradient(50rem 28rem at 85% -12%,rgb(var(--accent) / .07),transparent 60%),
@@ -78,12 +63,10 @@ body{
 html.light body{background:rgb(var(--bg))}
 ::selection{background:rgb(var(--accent) / .3)}
 
-/* Heading: Inter rapat gaya Linear. Mono hanya untuk angka besar. */
 h1,h2,.serif{font-weight:600;letter-spacing:-.03em}
 h1{letter-spacing:-.04em}
 .text-5xl,.font-mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
 
-/* Form */
 input,select,textarea{
   background:rgb(var(--field));
   color:inherit;
@@ -105,9 +88,6 @@ button:focus-visible,a:focus-visible{outline:2px solid rgb(var(--accent));outlin
 [draggable=true]:active{opacity:.6}
 .noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
 
-/* =========================================================
-   KOMPONEN
-   ========================================================= */
 .card-lift{
   background-color:rgb(var(--surface-1));
   border-color:rgb(var(--border));
@@ -139,22 +119,18 @@ html.light .hero-logo{filter:invert(1) drop-shadow(0 0 16px rgb(var(--accent) / 
 .spark{position:absolute;color:rgb(var(--accent));animation:twinkle 3s ease-in-out infinite}
 @media(max-width:640px){.hero-logo{opacity:.2;right:-12px}}
 
-/* Chart dashboard: warna atribut SVG diambil dari token */
 svg.w-full line{stroke:rgb(var(--border))}
 svg.w-full text{fill:rgb(var(--fg-4))}
+svg.w-full circle.dot{stroke:rgb(var(--surface-1));stroke-width:2}
 svg path.draw{filter:drop-shadow(0 0 6px rgb(var(--accent) / .5))}
 html.light svg path.draw{filter:none}
 
-/* Maskot */
 .mascot{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:5;transition:left 1.6s linear;transform:translateX(-50%);background:none;border:0;padding:0;cursor:pointer}
 .mascot:active{transform:translateX(-50%)}
 .mascot span{transition:transform .2s}
 .mascot img{display:block;transform-origin:50% 100%;animation:hop .8s ease-in-out infinite;filter:drop-shadow(0 6px 12px rgb(var(--accent) / .35))}
 .mascot img.hop-big{animation:hopbig .7s ease-out}
 
-/* =========================================================
-   MOTION
-   ========================================================= */
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}}
 @keyframes fade{from{opacity:0}}
 @keyframes slide{from{transform:translateX(100%)}}
