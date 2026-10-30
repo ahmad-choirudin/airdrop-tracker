@@ -1,15 +1,30 @@
+import defaultTheme from 'tailwindcss/defaultTheme'
+
+const spacing = Object.fromEntries(
+  Object.entries(defaultTheme.spacing).filter(([k]) => !['1.5', '2.5', '3.5'].includes(k))
+)
 const c = v => `rgb(var(--${v}) / <alpha-value>)`
 
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
+    spacing,
+    fontSize: {
+      xs: ['0.75rem', { lineHeight: '1rem' }],
+      sm: ['0.875rem', { lineHeight: '1.25rem' }],
+      base: ['1rem', { lineHeight: '1.5rem' }],
+      lg: ['1.25rem', { lineHeight: '1.75rem' }],
+      '2xl': ['1.75rem', { lineHeight: '2rem' }],
+      '4xl': ['2.5rem', { lineHeight: '1.1' }],
+      display: ['3.5rem', { lineHeight: '1.05' }],
+    },
     extend: {
       colors: {
-        ink: c('bg'),          // latar halaman
-        panel: c('surface-1'), // kartu / panel
-        line: c('border'),     // pemisah 1px
-        accent: c('accent'),   // lime identitas
-        white: c('fg'),        // "putih" mengikuti tema (teks / overlay tipis)
+        ink: c('bg'),
+        panel: c('surface-1'),
+        line: c('border'),
+        accent: c('accent'),
+        white: c('fg'),
         zinc: {
           100: c('fg'),
           300: c('fg-2'),
@@ -24,7 +39,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
-      // Skala radius: tag -> kontrol -> blok -> kartu -> hero
+
       borderRadius: {
         DEFAULT: '6px',
         lg: '8px',
@@ -32,7 +47,7 @@ export default {
         '2xl': '16px',
         '3xl': '20px',
       },
-      // Hanya weight 400 / 500 / 600 yang dimuat
+
       fontWeight: { bold: '600' },
     },
   },
